@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Зоя Педонова](https://up.htmlacademy.ru/nodejs-api/4/user/171114).
-* Наставник: `Неизвестно`.
+* Наставник: [Артем Макаров](https://htmlacademy.ru/profile/deepsick).
 
 ---
 
