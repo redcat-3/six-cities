@@ -2,9 +2,10 @@ import { User } from './user.type';
 import { Location } from './location.type';
 
 export type Offer = {
+  id: number;
   title: string;
   description: string;
-  date: string;
+  postDate: Date;
   city:	string;
   previewImage: string;
   images: string[];
@@ -16,6 +17,6 @@ export type Offer = {
   maxAdults: number;
   price: number;
   goods: string[];
-  user: User;
+  host: Omit<User, 'password' | 'email'>;
   location: Location;
 }
