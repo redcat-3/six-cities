@@ -16,7 +16,7 @@ export type Offer = {
   bedrooms: number;
   maxAdults: number;
   price: number;
-  goods: string[];
+  features: string[];
   host: Omit<User, 'password' | 'email'>;
-  location: Location;
+  location: Omit<Location, 'zoom'>;
 }
