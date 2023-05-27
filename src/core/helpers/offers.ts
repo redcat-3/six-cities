@@ -12,10 +12,11 @@ export function createOffer(offerData: string): Offer {
     isFavorite,
     rating,
     type,
-    bedrooms,
-    maxAdults,
+    bedroomsNumber,
+    maxAdultsNumber,
     price,
     features,
+    email,
     avatarPath,
     name,
     isPro,
@@ -34,11 +35,11 @@ export function createOffer(offerData: string): Offer {
     isFavorite: Boolean(isFavorite),
     rating: Number.parseInt(rating, 10),
     type,
-    bedrooms: Number.parseInt(bedrooms, 10),
-    maxAdults: Number.parseInt(maxAdults, 10),
+    bedroomsNumber: Number.parseInt(bedroomsNumber, 10),
+    maxAdultsNumber: Number.parseInt(maxAdultsNumber, 10),
     price: Number.parseInt(price, 10),
     features: features.split(';'),
-    host: {avatarPath, name, isPro: Boolean(isPro)},
+    host: {email, avatarPath, name, isPro: Boolean(isPro)},
     location: {latitude: Number.parseInt(latitude, 10), longitude: Number.parseInt(longitude, 10)}
   } as Offer;
 }
