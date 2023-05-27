@@ -2,7 +2,6 @@ import { Offer } from '../../types/offer.type.js';
 
 export function createOffer(offerData: string): Offer {
   const [
-    id,
     title,
     description,
     createdDate,
@@ -17,7 +16,6 @@ export function createOffer(offerData: string): Offer {
     maxAdults,
     price,
     features,
-    hostId,
     avatarPath,
     name,
     isPro,
@@ -26,7 +24,6 @@ export function createOffer(offerData: string): Offer {
   ] = offerData.replace('\n', '').split('\t');
 
   return {
-    id: Number.parseInt(id, 10),
     title,
     description,
     postDate: new Date(createdDate),
@@ -41,7 +38,7 @@ export function createOffer(offerData: string): Offer {
     maxAdults: Number.parseInt(maxAdults, 10),
     price: Number.parseInt(price, 10),
     features: features.split(';'),
-    host: {id: Number.parseInt(hostId, 10), avatarPath, name, isPro: Boolean(isPro)},
+    host: {avatarPath, name, isPro: Boolean(isPro)},
     location: {latitude: Number.parseInt(latitude, 10), longitude: Number.parseInt(longitude, 10)}
   } as Offer;
 }
