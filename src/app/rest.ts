@@ -36,7 +36,7 @@ export default class RestApplication {
     await this._initDb();
     this.logger.info('Init database completed');
     const user = await UserModel.create({
-      email: 'test@email.loca',
+      email: 'test@email.loc',
       avatarPath: 'keks.jpg',
       name: 'Keks',
       isPro: 'true',
