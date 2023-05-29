@@ -2,7 +2,6 @@ import { User } from './user.type';
 import { Location } from './location.type';
 
 export type Offer = {
-  id: number;
   title: string;
   description: string;
   postDate: Date;
@@ -13,10 +12,10 @@ export type Offer = {
   isFavorite: boolean;
   rating: number;
   type: string;
-  bedrooms: number;
-  maxAdults: number;
+  bedroomsNumber: number;
+  maxAdultsNumber: number;
   price: number;
   features: string[];
-  host: Omit<User, 'password' | 'email'>;
+  host: User;
   location: Omit<Location, 'zoom'>;
 }

@@ -10,7 +10,7 @@
   "main": "main.js",
   "scripts": {
     "start": "npm run build && node ./dist/src/main.js",
-    "start:dev": "npm run ts ./src/main.ts | pino-pretty --colorize --translateTime SYS:standard",
+    "start:dev": "nodemon",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
@@ -38,6 +38,7 @@
     "npm": ">=8"
   },
   "dependencies": {
+    "@typegoose/typegoose": "9.13.2",
     "chalk": "5.2.0",
     "convict": "6.2.4",
     "convict-format-with-validator": "6.2.0",
@@ -45,6 +46,7 @@
     "dotenv": "16.0.3",
     "got": "12.6.0",
     "inversify": "6.0.1",
+    "mongoose": "6.7.2",
     "pino": "8.14.1",
     "pino-pretty": "10.0.0",
     "reflect-metadata": "0.1.13"
