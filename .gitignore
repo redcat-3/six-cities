@@ -5,10 +5,10 @@
 /dist/
 /docs/
 .idea/*
+/mongodb/
 
 .DS_Store
 coverage
 *.log
 *.env
-
-test-data.tsv
+/mocks/test-data.tsv
