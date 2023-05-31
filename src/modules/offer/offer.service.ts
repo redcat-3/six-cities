@@ -7,7 +7,7 @@ import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { OfferServiceInterface } from './offer-service.interface.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
-import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
+import { DEFAULT_OFFER_COUNT, MAX_COMMENTS_COUNT } from './offer.constant.js';
 
 @injectable()
 export default class OfferService implements OfferServiceInterface {
@@ -32,9 +32,25 @@ export default class OfferService implements OfferServiceInterface {
 
   public async find(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find()
-      .populate(['hostId'])
-      .exec();
+      .aggregate([
+        {
+          $lookup: {
+            from: 'comments',
+            let: { commentId: '$_id'},
+            pipeline: [
+              { $match: { $expr: { $in: ['$$commentId', '$comments'] } } },
+              { $project: { _id: 1}}
+            ],
+            as: 'comments'
+          },
+        },
+        { $addFields:
+          { id: { $toString: '$_id'}, commentCount: { $size: '$comments'} }
+        },
+        { $unset: 'offers' },
+        { $limit: MAX_COMMENTS_COUNT },
+        { $sort: { offerCount: SortType.Down } }
+      ]).exec();
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
