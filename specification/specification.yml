@@ -1,0 +1,492 @@
+openapi: 3.1.0
+info:
+  title: API сервер для проекта «Шесть городов».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: offers
+    description: Действия с объявлениями.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение
+        аватара должно быть в формате `png` или `jpg`.
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список предложений по аренде
+      description: Регистрирует нового пользователя.
+      requestBody:
+        description: Возвращает массив предложений. Каждое предложение описано в виде объекта.
+
+      responses:
+        "200":
+          description: Объекты успешно получены
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Найденные объекты предложений
+                items:
+                  $ref: '#/components/schemas/offer'
+
+  /offers/premium:
+    get:
+      tags:
+        - offers
+      summary: Список премиальных предложений по аренде
+      description: Список премиальных предложений по аренде.
+      requestBody:
+        description: Возвращает массив премиальных предложений. Каждое предложение описано в виде объекта.
+
+      responses:
+        "200":
+          description: Объекты успешно получены
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Найденные объекты предложений
+                items:
+                  $ref: '#/components/schemas/offer'
+    post:
+      tags:
+        - offers
+      summary: Добавление нового предложения.
+      description: Добавление нового предложения.
+      requestBody:
+        description: Информация для создания нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+
+      responses:
+        "201":
+          description: Предложение добавлено. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+  /offers/favorite:
+    get:
+      tags:
+        - offers
+      summary: Список избранных предложений по аренде
+      description: Список избранных предложений по аренде.
+      requestBody:
+        description: Возвращает массив избранных предложений. Каждое предложение описано в виде объекта.
+
+      responses:
+        "200":
+          description: Объекты успешно получены
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Найденные объекты предложений
+                items:
+                  $ref: '#/components/schemas/offer'
+
+  /offers/favorite/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Добавление/удаление предложения с идентификатором offerId в/из списка избранных предложений.
+      description: Добавление/удаление предложения с идентификатором offerId в/из списка избранных предложений.
+      requestBody:
+        description: Меняет статус предложения.
+
+      responses:
+        "200":
+          description: Сервис возвращает предложение с идентификатором offerId.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+  /offsers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Возвращает предложение с идентификатором offerId.
+      description: Возвращает предложение с идентификатором offerId.
+
+      responses:
+        "201":
+          description: Предложение существует. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "409":
+          description: Предложение с идентификатором offerId не существует.
+
+    post:
+      tags:
+        - offers
+      summary: Редактирует предложение с идентификатором offerId.
+      description: Редактирует предложение с идентификатором offerId.
+      content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+      responses:
+        "201":
+          description: Предложение отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "409":
+          description: Предложение с идентификатором offerId не существует.
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения с идентификатором offerId.
+      description: Удаление предложения с идентификатором offerId.
+      requestBody:
+        description: Информация для удаления предложения с идентификатором offerId.
+      responses:
+        "200":
+          description: Предложение удалено.
+
+  /comments/{offerId}:
+    get:
+      tags:
+        - comments
+      summary: Возвращает cписок комментариев для определённого предложения
+      description: Возвращает cписок комментариев для определённого предложения
+      requestBody:
+        description: Возвращает cписок комментариев для определённого предложения. Каждый комментарий описано в виде объекта.
+
+      responses:
+        "200":
+          description: Объекты успешно получены
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Найденные объекты комментариев
+                items:
+                  $ref: '#/components/schemas/comment'
+
+    post:
+      tags:
+        - comments
+      summary: Добавление нового комментария для определённого предложения
+      description: Добавление нового комментария для определённого предложения
+      requestBody:
+        description: Информация для добавление нового комментария для определённого предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+
+      responses:
+        "200":
+          description: Объекты успешно получены
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Найденные объекты комментариев
+                items:
+                  $ref: '#/components/schemas/comment'
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        name:
+          type: string
+          example: Keks
+
+        isPro:
+          type: boolean
+          example: false
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        name:
+          type: string
+          example: Keks
+
+        isPro:
+          type: boolean
+          example: false
+
+        password:
+          type: string
+          example: 123456
+
+    createOffer:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam
+
+        postDate:
+          type: string
+          example: Wed May 10 2023 18:08:25 GMT+0800 (Иркутск, стандартное время)
+
+        city:
+          type: string
+          example: Amsterdam
+
+        previewImage:
+          type: string
+          example: img/1.png
+
+        images:
+          type: string
+          example: img/1.png;img/1.png
+
+        isPremium:
+          type: boolean
+          example: false
+
+        isFavorite:
+          type: boolean
+          example: false
+
+        rating:
+          type: string
+          example: 12
+
+        type:
+          type: string
+          example: apartment
+
+        bedroomsNumber:
+          type: string
+          example: 2
+
+        maxAdultsNumber:
+          type: string
+          example: 2
+
+        price:
+          type: string
+          example: 2000
+
+        features:
+          type: string
+          example: Fridge;Dishwasher;Baby seat
+
+        hostId:
+          type: string
+          example: 143fdfd
+
+        latitude:
+          type: string
+          example: 20.58955
+
+        longitude:
+          type: string
+          example: 4.58955
+
+    offer:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        title:
+          type: string
+          example: Beautiful & luxurious studio at great location
+
+        description:
+          type: string
+          example: A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam
+
+        postDate:
+          type: string
+          example: Wed May 10 2023 18:08:25 GMT+0800 (Иркутск, стандартное время)
+
+        city:
+          type: string
+          example: Amsterdam
+
+        previewImage:
+          type: string
+          example: img/1.png
+
+        images:
+          type: string
+          example: img/1.png;img/1.png
+
+        isPremium:
+          type: boolean
+          example: false
+
+        isFavorite:
+          type: boolean
+          example: false
+
+        rating:
+          type: string
+          example: 12
+
+        type:
+          type: string
+          example: apartment
+
+        bedroomsNumber:
+          type: string
+          example: 2
+
+        maxAdultsNumber:
+          type: string
+          example: 2
+
+        price:
+          type: string
+          example: 2000
+
+        features:
+          type: string
+          example: Fridge;Dishwasher;Baby seat
+
+        hostId:
+          type: string
+          example: 143fdfd
+
+        latitude:
+          type: string
+          example: 20.58955
+
+        longitude:
+          type: string
+          example: 4.58955
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: Relax, rejuvenate and unplug in this ultimate rustic getaway experience in the country. In our beautiful screened Pondhouse, you can gaze at the stars and listen to the sounds of nature from your cozy warm bed
+
+        postDate:
+          type: string
+          example: Wed May 10 2023 18:08:25 GMT+0800 (Иркутск, стандартное время)
+
+        rating:
+          type: string
+          example: 7.1
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    comment:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        text:
+          type: string
+          example: Relax, rejuvenate and unplug in this ultimate rustic getaway experience in the country. In our beautiful screened Pondhouse, you can gaze at the stars and listen to the sounds of nature from your cozy warm bed
+
+        postDate:
+          type: string
+          example: Wed May 10 2023 18:08:25 GMT+0800 (Иркутск, стандартное время)
+
+        rating:
+          type: string
+          example: 7.1
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+

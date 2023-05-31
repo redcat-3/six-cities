@@ -1,6 +1,7 @@
+import { Location } from '../../../types/location.type.js';
 import {OfferType} from '../../../types/offer-type.enum.js';
 
-export default class CreateOfferDto {
+export default class UpdateOfferDto {
   public title!: string;
   public description!: string;
   public postDate!: Date;
@@ -16,6 +17,5 @@ export default class CreateOfferDto {
   public price!: number;
   public features!: string[];
   public hostId!: string;
-  public latitude!: number;
-  public longitude!: number;
+  public location!: Omit<Location, 'zoom'>;
 }
