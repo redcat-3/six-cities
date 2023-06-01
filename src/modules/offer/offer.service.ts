@@ -73,7 +73,7 @@ export default class OfferService implements OfferServiceInterface {
           },
         },
         { $addFields:
-          { rating: { $sum: '$ratings'} }
+          { rating: { $avg: '$ratings'} }
         },
         { $unset: 'ratings' },
       ]).exec();
