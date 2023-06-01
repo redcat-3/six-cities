@@ -40,6 +40,7 @@ export function createOffer(offerData: string): Offer {
     price: Number.parseInt(price, 10),
     features: features.split(';'),
     host: {email, avatarPath, name, isPro: Boolean(isPro)},
-    location: {latitude: Number.parseInt(latitude, 10), longitude: Number.parseInt(longitude, 10)}
+    latitude: Number.parseInt(latitude, 10),
+    longitude: Number.parseInt(longitude, 10)
   } as Offer;
 }
