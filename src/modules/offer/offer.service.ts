@@ -30,11 +30,53 @@ export default class OfferService implements OfferServiceInterface {
       .exec();
   }
 
-  public async find(): Promise<DocumentType<OfferEntity>[]> {
+  public async find(): Promise<DocumentType<OfferEntity>[]>{
     return this.offerModel
       .find()
       .populate(['hostId'])
       .exec();
+  }
+
+  public async getCommentsCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel
+      .findById(offerId)
+      .aggregate([
+        {
+          $lookup: {
+            from: 'comments',
+            pipeline: [
+              { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
+              { $project: { _id: 1}}
+            ],
+            as: 'comments'
+          },
+        },
+        { $addFields:
+          { commentCount: { $size: '$comments'} }
+        },
+        { $unset: 'comments' },
+      ]).exec();
+  }
+
+  public async getRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel
+      .findById(offerId)
+      .aggregate([
+        {
+          $lookup: {
+            from: 'comments',
+            pipeline: [
+              { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
+              { $project: { rating: 1}}
+            ],
+            as: 'ratings'
+          },
+        },
+        { $addFields:
+          { rating: { $avg: '$ratings'} }
+        },
+        { $unset: 'ratings' },
+      ]).exec();
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {

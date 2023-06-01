@@ -1,5 +1,5 @@
+import { OfferType } from './offer-type.enum';
 import { User } from './user.type';
-import { Location } from './location.type';
 
 export type Offer = {
   title: string;
@@ -11,11 +11,12 @@ export type Offer = {
   isPremium: boolean;
   isFavorite: boolean;
   rating: number;
-  type: string;
+  type: OfferType;
   bedroomsNumber: number;
   maxAdultsNumber: number;
   price: number;
   features: string[];
   host: User;
-  location: Omit<Location, 'zoom'>;
+  latitude: number;
+  longitude: number;
 }
