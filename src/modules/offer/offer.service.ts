@@ -7,7 +7,7 @@ import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { OfferServiceInterface } from './offer-service.interface.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
-import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
+import { DEFAULT_OFFER_COUNT, DEFAULT_PREMIUM_COUNT } from './offer.constant.js';
 
 @injectable()
 export default class OfferService implements OfferServiceInterface {
@@ -33,6 +33,7 @@ export default class OfferService implements OfferServiceInterface {
   public async find(): Promise<DocumentType<OfferEntity>[]>{
     return this.offerModel
       .find()
+      .sort({createdAt: SortType.Down})
       .populate(['hostId'])
       .exec();
   }
@@ -101,6 +102,34 @@ export default class OfferService implements OfferServiceInterface {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.offerModel
       .find({users: userId}, {}, {limit})
+      .populate(['userId'])
+      .exec();
+  }
+
+  public async findPremiumOffers(): Promise<DocumentType<OfferEntity>[]> {
+    const limit = DEFAULT_PREMIUM_COUNT;
+    return this.offerModel
+      .find({isPremium: true}, {}, {limit})
+      .sort({createdAt: SortType.Down})
+      .populate(['userId'])
+      .exec();
+  }
+
+  public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
+    const limit = DEFAULT_OFFER_COUNT;
+    return this.offerModel
+      .find({isFavorite: true}, {}, {limit})
+      .sort({createdAt: SortType.Down})
+      .populate(['userId'])
+      .exec();
+  }
+
+  public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    return this.offerModel
+      .findById(offerId)
+      .aggregate([
+        { $set: { '$isFavorite': '$!isFavorite' } }
+      ])
       .populate(['userId'])
       .exec();
   }

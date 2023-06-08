@@ -11,7 +11,7 @@ export default class OfferRdo {
   @Expose()
   public description!: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt'})
   public postDate!: string;
 
   @Expose()
