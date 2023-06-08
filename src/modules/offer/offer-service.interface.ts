@@ -1,5 +1,5 @@
-import {DocumentType} from '@typegoose/typegoose';
-import {OfferEntity} from './offer.entity.js';
+import { DocumentType } from '@typegoose/typegoose';
+import { OfferEntity } from './offer.entity.js';
 import CreateOfferDto from './dto/create-offer.dto.js';
 
 export interface OfferServiceInterface {
@@ -14,4 +14,7 @@ export interface OfferServiceInterface {
   findNew(count: number): Promise<DocumentType<OfferEntity>[]>;
   findDiscussed(count: number): Promise<DocumentType<OfferEntity>[]>;
   exists(documentId: string): Promise<boolean>;
+  findPremiumOffers(): Promise<DocumentType<OfferEntity>[]>;
+  findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]>;
+  changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null>;
 }

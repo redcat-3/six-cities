@@ -38,6 +38,16 @@ export const HOUSE_TYPES = [
   'hotel'
 ];
 
+export const Title = {
+  Min: 10,
+  Max: 100
+};
+
+export const Description = {
+  Min: 20,
+  Max: 1024
+};
+
 export const Rating = {
   Min: 1,
   Max: 5
