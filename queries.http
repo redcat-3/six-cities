@@ -1,4 +1,80 @@
-# Get mock data from fake server
+# Тестовые данные
 GET http://localhost:3123/api HTTP/1.1
 
 ###
+
+# Пользователи
+## Регистрация пользователя
+POST http://localhost:4000/users/register HTTP/1.1
+Content-Type: application/json
+{
+  "email": "torans@overlook.net",
+  "avatarPath": "torrance.png",
+  "name": "Jack",
+  "isPro": "Torrance",
+  "password": "shining"
+}
+###
+## Авторизация пользователя
+POST http://localhost:4000/users/login HTTP/1.1
+Content-Type: application/json
+{
+  "email": "torans@overlook.net",
+  "password": "123456"
+}
+
+###
+
+# Объявления
+## Объявление по идентификатору
+
+GET http://localhost:4000/offers/62711a50b0e24a624d49ffdc HTTP/1.1
+
+
+###
+## Список объявлений
+
+GET http://localhost:4000/offers HTTP/1.1
+
+###
+## Создание объявления
+
+POST http://localhost:4000/offers HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Билли Саммерс",
+  "description": "Новый детективный роман от короля ужасов.",
+  "postDate": "2022-05-12T11:56:37.573Z",
+  "city":	"Amsterdam",
+  "previewImage": "billy-summers.png",
+  "images": ["billy-summers.png"],
+  "isPremium": true,
+  "isFavorite": true,
+  "price": 1400,
+  "type": "apartment",
+  "bedroomsNumber": 1,
+  "maxAdultsNumber": 1,
+  "price": 1408,
+  "features": ["Air conditioning"],
+  "hostId": "62823cb2c5a64ce9f1b50ec8",
+  "latitude": 50.9903,
+  "longitude": 4.8902,
+}
+
+###
+## Удаление объявления
+
+DELETE http://localhost:4000/offers/62825028a75295825778ac80 HTTP/1.1
+
+###
+## Обновление объявления
+
+PATCH http://localhost:4000/offers/62823cb3c5a64ce9f1b50fdb HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Ночной дозор 3",
+  "description": "Проверка обновления",
+  "price": 1100
+}
