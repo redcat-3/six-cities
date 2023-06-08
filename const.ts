@@ -38,6 +38,11 @@ export const HOUSE_TYPES = [
   'hotel'
 ];
 
+export const Name = {
+  Min: 1,
+  Max: 15
+};
+
 export const Title = {
   Min: 10,
   Max: 100
@@ -45,6 +50,11 @@ export const Title = {
 
 export const Description = {
   Min: 20,
+  Max: 1024
+};
+
+export const Text = {
+  Min: 5,
   Max: 1024
 };
 
