@@ -1,6 +1,6 @@
 import {OfferType} from '../../../types/offer-type.enum.js';
 import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional } from 'class-validator';
-import { Title, Description, RoomsNumber, Rating, AdultsNumber, Price, Latitude, Longitude } from '../../../../const.js';
+import {MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price, Latitude, Longitude } from '../offer.constant.js';
 import { City } from '../../../types/city.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
@@ -24,12 +24,12 @@ export default class UpdateOfferDto {
   public city!:	string;
 
   @IsOptional()
-  @MaxLength(256, {message: 'Too short for field «image»'})
+  @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
   public previewImage!: string;
 
   @IsOptional()
   @IsArray({message: 'Field images must be an array'})
-  @MaxLength(256, {message: 'Too short for field «image»'})
+  @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
   public images!: string[];
 
   @IsOptional()
@@ -39,12 +39,6 @@ export default class UpdateOfferDto {
   @IsOptional()
   @IsBoolean({message: 'Field isFavorite must be boolean'})
   public isFavorite!: boolean;
-
-  @IsOptional()
-  @IsInt({message: 'Rating must be an integer'})
-  @Min(Rating.Min, {message: 'Minimum rating is $Rating.Min'})
-  @Max(Rating.Max, {message: 'Maximum rating is $Rating.Max'})
-  public rating!: number;
 
   @IsOptional()
   @IsEnum(OfferType, {message: 'type must be &OfferType'})

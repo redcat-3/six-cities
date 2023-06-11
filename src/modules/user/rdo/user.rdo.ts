@@ -5,14 +5,11 @@ export default class UserRdo {
   public email!: string ;
 
   @Expose()
-  public avatarPath!: string;
+  public avatarPath?: string;
 
   @Expose()
   public name!: string;
 
   @Expose()
   public isPro!: string;
-
-  @Expose()
-  public password!: string;
 }

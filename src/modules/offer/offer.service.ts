@@ -24,6 +24,24 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    this.offerModel.aggregate([
+      {
+        $lookup: {
+          from: 'comments',
+          pipeline: [
+            { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
+            { $project: { _id: 1}}
+          ],
+          as: 'comments'
+        },
+      },
+      { $addFields:
+        { commentCount: { $size: '$comments'},
+          rating: { $avg: '$comments'}}
+      },
+      { $unset: 'comments' },
+    ]);
+
     return this.offerModel
       .findById(offerId)
       .populate(['hostId'])
@@ -31,53 +49,27 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async find(): Promise<DocumentType<OfferEntity>[]>{
+    this.offerModel.aggregate([
+      {
+        $lookup: {
+          from: 'comments',
+          pipeline: [
+            { $project: { _id: 1}}
+          ],
+          as: 'comments'
+        },
+      },
+      { $addFields:
+        { commentCount: { $size: '$comments'} }
+      },
+      { $unset: 'comments' },
+    ]);
+
     return this.offerModel
       .find()
       .sort({createdAt: SortType.Down})
       .populate(['hostId'])
       .exec();
-  }
-
-  public async getCommentsCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findById(offerId)
-      .aggregate([
-        {
-          $lookup: {
-            from: 'comments',
-            pipeline: [
-              { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
-              { $project: { _id: 1}}
-            ],
-            as: 'comments'
-          },
-        },
-        { $addFields:
-          { commentCount: { $size: '$comments'} }
-        },
-        { $unset: 'comments' },
-      ]).exec();
-  }
-
-  public async getRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findById(offerId)
-      .aggregate([
-        {
-          $lookup: {
-            from: 'comments',
-            pipeline: [
-              { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
-              { $project: { rating: 1}}
-            ],
-            as: 'ratings'
-          },
-        },
-        { $addFields:
-          { rating: { $avg: '$ratings'} }
-        },
-        { $unset: 'ratings' },
-      ]).exec();
   }
 
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
@@ -108,6 +100,22 @@ export default class OfferService implements OfferServiceInterface {
 
   public async findPremiumOffers(): Promise<DocumentType<OfferEntity>[]> {
     const limit = DEFAULT_PREMIUM_COUNT;
+    this.offerModel.aggregate([
+      {
+        $lookup: {
+          from: 'comments',
+          pipeline: [
+            { $project: { _id: 1}}
+          ],
+          as: 'comments'
+        },
+      },
+      { $addFields:
+        { commentCount: { $size: '$comments'} }
+      },
+      { $unset: 'comments' },
+    ]);
+
     return this.offerModel
       .find({isPremium: true}, {}, {limit})
       .sort({createdAt: SortType.Down})
@@ -117,6 +125,22 @@ export default class OfferService implements OfferServiceInterface {
 
   public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
     const limit = DEFAULT_OFFER_COUNT;
+    this.offerModel.aggregate([
+      {
+        $lookup: {
+          from: 'comments',
+          pipeline: [
+            { $project: { _id: 1}}
+          ],
+          as: 'comments'
+        },
+      },
+      { $addFields:
+        { commentCount: { $size: '$comments'} }
+      },
+      { $unset: 'comments' },
+    ]);
+
     return this.offerModel
       .find({isFavorite: true}, {}, {limit})
       .sort({createdAt: SortType.Down})
@@ -125,6 +149,22 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    this.offerModel.aggregate([
+      {
+        $lookup: {
+          from: 'comments',
+          pipeline: [
+            { $project: { _id: 1}}
+          ],
+          as: 'comments'
+        },
+      },
+      { $addFields:
+        { commentCount: { $size: '$comments'} }
+      },
+      { $unset: 'comments' },
+    ]);
+
     return this.offerModel
       .findById(offerId)
       .aggregate([

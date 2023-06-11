@@ -8,6 +8,8 @@ import { getMongoURI } from '../core/helpers/index.js';
 import express, { Express } from 'express';
 import { ControllerInterface } from '../core/controller/controller.interface.js';
 import { ExceptionFilterInterface } from '../core/expception-filters/exception-filter.interface.js';
+import bodyParser from 'body-parser';
+import { booleanize } from 'express-query-booleanizer';
 
 
 @injectable()
@@ -18,6 +20,8 @@ export default class RestApplication {
     @inject(AppComponent.ConfigInterface) private readonly config: ConfigInterface<RestSchema>,
     @inject(AppComponent.DatabaseClientInterface) private readonly databaseClient: DatabaseClientInterface,
     @inject(AppComponent.UserController) private readonly userController: ControllerInterface,
+    @inject(AppComponent.OfferController) private readonly offerController: ControllerInterface,
+    @inject(AppComponent.CommentController) private readonly commentController: ControllerInterface,
     @inject(AppComponent.ExceptionFilterInterface) private readonly exceptionFilter: ExceptionFilterInterface
   ) {
     this.expressApplication = express();
@@ -50,12 +54,16 @@ export default class RestApplication {
   private async _initRoutes() {
     this.logger.info('Controller initialization…');
     this.expressApplication.use('/users', this.userController.router);
+    this.expressApplication.use('/offers', this.offerController.router);
+    this.expressApplication.use('/comments', this.commentController.router);
     this.logger.info('Controller initialization completed');
   }
 
   private async _initMiddleware() {
     this.logger.info('Global middleware initialization…');
     this.expressApplication.use(express.json());
+    this.expressApplication.use(bodyParser.json());
+    this.expressApplication.use(booleanize());
     this.expressApplication.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
@@ -75,8 +83,8 @@ export default class RestApplication {
 
     this.logger.info('Init database…');
     await this._initDb();
-    await this._initRoutes();
     await this._initMiddleware();
+    await this._initRoutes();
     await this._initExceptionFilters();
     await this._initServer();
   }

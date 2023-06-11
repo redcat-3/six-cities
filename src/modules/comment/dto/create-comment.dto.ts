@@ -1,5 +1,5 @@
-import {IsMongoId, IsString, Length, IsInt, Min, Max, IsDateString} from 'class-validator';
-import { Rating, Text } from '../../../../const.js';
+import {IsMongoId, IsString, Length, IsInt, Min, Max } from 'class-validator';
+import { Rating, Text } from '../comment.constant.js';
 
 export default class CreateCommentDto {
   @IsString({message: 'text is required'})
@@ -10,9 +10,6 @@ export default class CreateCommentDto {
   @Min(Rating.Min, {message: 'Minimum rating is $Rating.Min'})
   @Max(Rating.Max, {message: 'Maximum rating is $Rating.Max'})
   public rating!: number;
-
-  @IsDateString({}, {message: 'postDate must be valid ISO date'})
-  public postDate!: Date;
 
   @IsMongoId({message: 'offerId field must be a valid id'})
   public offerId!: string;
