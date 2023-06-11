@@ -1,8 +1,7 @@
 import { OfferType } from '../../../types/offer-type.enum.js';
-import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength } from 'class-validator';
-import { Title, Description, RoomsNumber, Rating, AdultsNumber, Price, Latitude, Longitude } from '../../../../const.js';
+import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude } from 'class-validator';
 import { City } from '../../../types/city.enum.js';
-import { FeatureType } from '../../../types/feature-type.enum.js';
+import { MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price } from '../offer.constant.js';
 
 export default class CreateOfferDto {
   @MinLength(Title.Min, {message: 'Minimum title length must be $Title.Min'})
@@ -19,11 +18,10 @@ export default class CreateOfferDto {
   @IsEnum(City, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
   public city!:	string;
 
-  @MaxLength(256, {message: 'Too short for field «image»'})
+  @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
   public previewImage!: string;
 
   @IsArray({message: 'Field images must be an array'})
-  @MaxLength(256, {message: 'Too short for field «image»'})
   public images!: string[];
 
   @IsBoolean({message: 'Field isPremium must be boolean'})
@@ -31,11 +29,6 @@ export default class CreateOfferDto {
 
   @IsBoolean({message: 'Field isFavorite must be boolean'})
   public isFavorite!: boolean;
-
-  @IsInt({message: 'Rating must be an integer'})
-  @Min(Rating.Min, {message: 'Minimum rating is $Rating.Min'})
-  @Max(Rating.Max, {message: 'Maximum rating is $Rating.Max'})
-  public rating!: number;
 
   @IsEnum(OfferType, {message: 'type must be &OfferType'})
   public type!: OfferType;
@@ -56,25 +49,14 @@ export default class CreateOfferDto {
   public price!: number;
 
   @IsArray({message: 'Field features must be an array'})
-  @IsEnum({each: FeatureType, message: 'Features field must be an array of valid values'})
   public features!: string[];
 
   @IsMongoId({message: 'hostId field must be valid an id'})
   public hostId!: string;
 
-  @IsInt({message: 'Comment count must be an integer'})
-  public commentCount!: number;
-  // public static async findBySpecies(this: ReturnModelType<typeof OfferEntity>, commentCount: number) {
-  //   return this.getCommentsCount({ commentCount }).exec();
-  // }
-
-  @IsInt({message: 'Latitude count must be an integer'})
-  @Min(Latitude.Min, {message: 'Minimum rating is $Latitude.Min'})
-  @Max(Latitude.Max, {message: 'Maximum rating is $Latitude.Max'})
+  @IsLatitude({message: 'Latitude count must be a valid latitude coordinate'})
   public latitude!: number;
 
-  @IsInt({message: 'Longitude count must be an integer'})
-  @Min(Longitude.Min, {message: 'Minimum rating is $Longitude.Min'})
-  @Max(Longitude.Max, {message: 'Maximum rating is $Longitude.Max'})
+  @IsLongitude({message: 'Longitude count must be a valid longitude coordinate'})
   public longitude!: number;
 }

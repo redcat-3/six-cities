@@ -67,7 +67,7 @@ export default class OfferController extends Controller {
       ]
     });
     this.addRoute({ path: '/premium', method: HttpMethod.Get, handler: this.indexPremiumOffers });
-    this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.indexPremiumOffers });
+    this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.indexFavoriteOffers });
     this.addRoute({
       path: '/favorite/:offerId',
       method: HttpMethod.Patch,

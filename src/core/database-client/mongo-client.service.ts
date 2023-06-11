@@ -21,7 +21,7 @@ export default class MongoClientService implements DatabaseClientInterface {
     let attempt = 0;
     while (attempt < RETRY_COUNT) {
       try {
-        return await mongoose.connect(uri);
+        return await mongoose.connect(uri, {autoIndex: true});
       } catch (error) {
         attempt++;
         this.logger.error(`Failed to connect to the database. Attempt ${attempt}`);

@@ -1,6 +1,7 @@
 import { User } from '../../types/user.type.js';
 import typegoose, { defaultClasses, getModelForClass } from '@typegoose/typegoose';
 import { createSHA256 } from '../../core/helpers/common.js';
+import { DEFAULT_USER_AVATAR } from './user.constant.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -21,17 +22,16 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({ required: true, default: '' })
   public name: string;
 
-  @prop({ required: true })
-  public isPro: boolean;
+  @prop({ required: true, default: '' })
+  public isPro: string;
 
   @prop({required: true, default: ''})
   private password!: string;
 
   constructor(userData: User) {
     super();
-
     this.email = userData.email;
-    this.avatarPath = userData.avatarPath;
+    this.avatarPath = userData.avatarPath ? userData.avatarPath : DEFAULT_USER_AVATAR;
     this.name = userData.name;
     this.isPro = userData.isPro;
   }

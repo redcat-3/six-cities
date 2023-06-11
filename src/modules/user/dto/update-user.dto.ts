@@ -1,5 +1,6 @@
-import { IsBoolean, IsEmail, IsOptional, IsString, Length } from 'class-validator';
-import { Name } from '../../../../const.js';
+import { IsBoolean, IsEmail, IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { Name, Password } from '../user.constant';
+import { MIN_LENGHT } from '../../offer/offer.constant';
 
 export default class UpdateUserDto {
   @IsOptional()
@@ -11,8 +12,8 @@ export default class UpdateUserDto {
   public isPro!: boolean;
 
   @IsOptional()
-  @IsString({message: 'avatarPath is required'})
-  public avatarPath!: string;
+  @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
+  public avatarPath?: string;
 
   @IsOptional()
   @IsString({message: 'name is required'})
@@ -21,5 +22,6 @@ export default class UpdateUserDto {
 
   @IsOptional()
   @IsString({message: 'password is required'})
+  @Length(Password.Min, Password.Max, {message: 'Min length for password is 6, max is 12'})
   public password!: string;
 }

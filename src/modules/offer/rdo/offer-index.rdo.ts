@@ -4,7 +4,7 @@ export default class OfferIndexRdo {
   @Expose()
   public title!: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt'})
   public postDate!: string;
 
   @Expose()
