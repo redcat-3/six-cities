@@ -37,38 +37,3 @@ export const HOUSE_TYPES = [
   'room',
   'hotel'
 ];
-
-export const Rating = {
-  Min: 1,
-  Max: 5
-};
-
-export const Price = {
-  Min: 100,
-  Max: 100000
-};
-
-export const RoomsNumber = {
-  Min: 1,
-  Max: 8
-};
-
-export const AdultsNumber = {
-  Min: 1,
-  Max: 8
-};
-
-export const Latitude = {
-  Min: 40,
-  Max: 50
-};
-
-export const Longitude = {
-  Min: 4,
-  Max: 6
-};
-
-export const WeekDay = {
-  First: 1,
-  Last: 7
-};

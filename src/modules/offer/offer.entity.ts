@@ -1,9 +1,8 @@
-import typegoose, {defaultClasses, getModelForClass, Ref} from '@typegoose/typegoose';
+import typegoose, { defaultClasses, getModelForClass, Ref } from '@typegoose/typegoose';
 import { UserEntity } from '../user/user.entity.js';
 import { OfferType } from '../../types/offer-type.enum.js';
 import { City } from '../../types/city.enum.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
-import { Location } from '../../types/location.type.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -34,7 +33,10 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({required: true})
   public previewImage!: string;
 
-  @prop({required: true})
+  @prop({
+    required: true,
+    type: String
+  })
   public images!: string[];
 
   @prop({required: true})
@@ -43,7 +45,10 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({required: true})
   public isFavorite!: boolean;
 
-  @prop({required: true})
+  @prop({
+    required: true,
+    default: 0
+  })
   public rating!: number;
 
   @prop({
@@ -79,7 +84,10 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public commentCount!: number;
 
   @prop({required: true})
-  public location!: Omit<Location, 'zoom'>;
+  public latitude!: number;
+
+  @prop({required: true})
+  public longitude!: number;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

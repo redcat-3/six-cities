@@ -11,7 +11,7 @@ export default class OfferRdo {
   @Expose()
   public description!: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt'})
   public postDate!: string;
 
   @Expose()
@@ -21,7 +21,7 @@ export default class OfferRdo {
   public previewImage!: string;
 
   @Expose()
-  public images!: string;
+  public images!: string[];
 
   @Expose()
   public isPremium!: boolean;
