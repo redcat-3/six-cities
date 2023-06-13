@@ -1,5 +1,5 @@
 import { OfferType } from '../../../types/offer-type.enum.js';
-import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude } from 'class-validator';
+import { IsArray, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude } from 'class-validator';
 import { City } from '../../../types/city.enum.js';
 import { MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price } from '../offer.constant.js';
 
@@ -11,9 +11,6 @@ export default class CreateOfferDto {
   @MinLength(Description.Min, {message: 'Minimum title length must be $Description.Min'})
   @MaxLength(Description.Max, {message: 'Maximum title length must be $Description.Max'})
   public description!: string;
-
-  @IsDateString({}, {message: 'postDate must be valid ISO date'})
-  public postDate!: Date;
 
   @IsEnum(City, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
   public city!:	string;

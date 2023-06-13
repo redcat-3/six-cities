@@ -2,5 +2,5 @@ export type User = {
   email: string;
   avatarPath?: string | undefined;
   name: string;
-  isPro: string;
+  isPro: boolean;
 }

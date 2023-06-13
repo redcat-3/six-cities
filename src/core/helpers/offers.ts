@@ -39,7 +39,7 @@ export function createOffer(offerData: string): Offer {
     maxAdultsNumber: Number.parseInt(maxAdultsNumber, 10),
     price: Number.parseInt(price, 10),
     features: features.split(';'),
-    host: {email, avatarPath, name, isPro},
+    host: {email, avatarPath, name, isPro: Boolean(isPro)},
     latitude: Number.parseInt(latitude, 10),
     longitude: Number.parseInt(longitude, 10)
   } as Offer;

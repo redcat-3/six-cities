@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import { OfferGeneratorInterface } from './offer-generator.interface.js';
 import { MockData } from '../../types/mock-data.type.js';
 import { generateRandomValue, generateRandomValueLocation, getRandomItem, getRandomItems } from '../../core/helpers/index.js';
-import { HOUSE_TYPES, RoomsNumber, Rating, AdultsNumber, Price, Latitude, Longitude, WeekDay } from '../../../const.js';
+import { HOUSE_TYPES } from '../../../const.js';
+import { AdultsNumber, Latitude, Longitude, Price, Rating, RoomsNumber, WeekDay } from '../offer/offer.constant.js';
 
 const BOOLEANS = ['true', 'false'];
 

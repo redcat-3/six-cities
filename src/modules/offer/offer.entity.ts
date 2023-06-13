@@ -20,8 +20,11 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({trim: true, required: true})
   public description!: string;
 
-  @prop({required: true})
-  public postDate!: Date;
+  @prop({
+    required: false,
+    name: 'createdAt'
+  })
+  public postDate?: Date;
 
   @prop({
     type: () => String,
@@ -45,10 +48,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({required: true})
   public isFavorite!: boolean;
 
-  @prop({
-    required: true,
-    default: 0
-  })
+  @prop({default: 0})
   public rating!: number;
 
   @prop({

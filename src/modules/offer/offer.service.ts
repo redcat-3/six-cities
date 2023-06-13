@@ -28,19 +28,22 @@ export default class OfferService implements OfferServiceInterface {
       {
         $lookup: {
           from: 'comments',
-          pipeline: [
-            { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
-            { $project: { _id: 1}}
-          ],
+          localField: '_id',
+          foreignField: 'offerId',
           as: 'comments'
         },
       },
+      { $unwind: '$comments.rating'},
+      { $group: {
+        _id: {offerId: '$comments.offerId'},
+        average: {$avg: '$comments.rating'}
+      }},
       { $addFields:
         { commentCount: { $size: '$comments'},
-          rating: { $avg: '$comments'}}
+          rating: '$comments.average'}
       },
       { $unset: 'comments' },
-    ]);
+    ]).exec();
 
     return this.offerModel
       .findById(offerId)
@@ -53,14 +56,21 @@ export default class OfferService implements OfferServiceInterface {
       {
         $lookup: {
           from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
+          pipeline: [{
+            $unwind: '$rating',
+            $project: { _id: 1,
+              rating: 1},
+            $group: {
+              _id: '$_id',
+              average: { $avg: '$rating'}
+            }
+          }],
           as: 'comments'
         },
       },
       { $addFields:
-        { commentCount: { $size: '$comments'} }
+        { commentCount: { $size: '$comments'},
+          rating: '$comments.average'}
       },
       { $unset: 'comments' },
     ]);
@@ -124,7 +134,7 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
-    const limit = DEFAULT_OFFER_COUNT;
+    //const limit = DEFAULT_OFFER_COUNT;
     this.offerModel.aggregate([
       {
         $lookup: {
@@ -142,7 +152,7 @@ export default class OfferService implements OfferServiceInterface {
     ]);
 
     return this.offerModel
-      .find({isFavorite: true}, {}, {limit})
+      .find()
       .sort({createdAt: SortType.Down})
       .populate(['userId'])
       .exec();
@@ -179,23 +189,5 @@ export default class OfferService implements OfferServiceInterface {
       .findByIdAndUpdate(offerId, {'$inc': {
         commentCount: 1,
       }}).exec();
-  }
-
-  public async findNew(count: number): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
-      .find()
-      .sort({createdAt: SortType.Down})
-      .limit(count)
-      .populate(['hostId'])
-      .exec();
-  }
-
-  public async findDiscussed(count: number): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
-      .find()
-      .sort({commentCount: SortType.Down})
-      .limit(count)
-      .populate(['hostId'])
-      .exec();
   }
 }

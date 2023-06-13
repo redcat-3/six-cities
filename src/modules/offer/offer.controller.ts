@@ -77,7 +77,7 @@ export default class OfferController extends Controller {
     this.addRoute({
       path: '/:offerId/comments',
       method: HttpMethod.Get,
-      handler: this.getComments,
+      handler: this.showComments,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
@@ -89,8 +89,7 @@ export default class OfferController extends Controller {
     {params}: Request<core.ParamsDictionary | ParamsGetOffer>,
     res: Response
   ): Promise<void> {
-    const {offerId} = params;
-    const offer = await this.offerService.findById(offerId);
+    const offer = await this.offerService.findById(params.offerId);
 
     this.ok(res, fillDTO(OfferRdo, offer));
   }
@@ -148,7 +147,7 @@ export default class OfferController extends Controller {
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
-  public async getComments(
+  public async showComments(
     {params}: Request<core.ParamsDictionary | ParamsGetOffer, object, object>,
     res: Response
   ): Promise<void> {
