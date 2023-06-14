@@ -127,32 +127,33 @@ export default class OfferService implements OfferServiceInterface {
     ]);
 
     return this.offerModel
-      .find({isPremium: true}, {}, {limit})
+      .find({'isPremium': true}, {}, {limit})
       .sort({createdAt: SortType.Down})
       .populate(['userId'])
       .exec();
   }
 
   public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
-    //const limit = DEFAULT_OFFER_COUNT;
+    const limit = DEFAULT_OFFER_COUNT;
     this.offerModel.aggregate([
       {
         $lookup: {
           from: 'comments',
           pipeline: [
-            { $project: { _id: 1}}
+            { $project: { _id: 1, rating: 1}}
           ],
           as: 'comments'
         },
       },
       { $addFields:
-        { commentCount: { $size: '$comments'} }
+        { commentCount: { $size: '$comments'},
+          rating: { $avg: '$comments.rating'} }
       },
       { $unset: 'comments' },
     ]);
 
     return this.offerModel
-      .find()
+      .find({'isFavorite': true}, {}, {limit})
       .sort({createdAt: SortType.Down})
       .populate(['userId'])
       .exec();

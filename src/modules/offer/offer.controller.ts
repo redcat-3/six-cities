@@ -19,6 +19,7 @@ import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists
 
 type ParamsGetOffer = {
   offerId: string;
+  favorite: string;
 }
 
 @injectable()
