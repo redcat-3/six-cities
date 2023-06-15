@@ -10,6 +10,7 @@ import { ControllerInterface } from '../core/controller/controller.interface.js'
 import { ExceptionFilterInterface } from '../core/expception-filters/exception-filter.interface.js';
 import bodyParser from 'body-parser';
 import { booleanize } from 'express-query-booleanizer';
+import { startRequest } from '../../src/core/logger/start-request.js';
 
 
 @injectable()
@@ -69,6 +70,7 @@ export default class RestApplication {
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
     this.logger.info('Global middleware initialization completed');
+    this.expressApplication.use(startRequest);
   }
 
   private async _initExceptionFilters() {

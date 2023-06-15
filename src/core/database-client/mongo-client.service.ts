@@ -19,9 +19,11 @@ export default class MongoClientService implements DatabaseClientInterface {
 
   private async _connectWithRetry(uri: string): Promise<Mongoose> {
     let attempt = 0;
+
+    mongoose.set('debug', true);
     while (attempt < RETRY_COUNT) {
       try {
-        return await mongoose.connect(uri, {autoIndex: true});
+        return await mongoose.connect(uri, { autoIndex: true});
       } catch (error) {
         attempt++;
         this.logger.error(`Failed to connect to the database. Attempt ${attempt}`);

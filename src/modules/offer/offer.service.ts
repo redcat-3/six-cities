@@ -24,26 +24,6 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'offerId',
-          as: 'comments'
-        },
-      },
-      { $unwind: '$comments.rating'},
-      { $group: {
-        _id: {offerId: '$comments.offerId'},
-        average: {$avg: '$comments.rating'}
-      }},
-      { $addFields:
-        { commentCount: { $size: '$comments'},
-          rating: '$comments.average'}
-      },
-      { $unset: 'comments' },
-    ]).exec();
 
     return this.offerModel
       .findById(offerId)
@@ -52,28 +32,6 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async find(): Promise<DocumentType<OfferEntity>[]>{
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [{
-            $unwind: '$rating',
-            $project: { _id: 1,
-              rating: 1},
-            $group: {
-              _id: '$_id',
-              average: { $avg: '$rating'}
-            }
-          }],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'},
-          rating: '$comments.average'}
-      },
-      { $unset: 'comments' },
-    ]);
 
     return this.offerModel
       .find()
@@ -110,21 +68,6 @@ export default class OfferService implements OfferServiceInterface {
 
   public async findPremiumOffers(): Promise<DocumentType<OfferEntity>[]> {
     const limit = DEFAULT_PREMIUM_COUNT;
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'} }
-      },
-      { $unset: 'comments' },
-    ]);
 
     return this.offerModel
       .find({'isPremium': true}, {}, {limit})
@@ -135,28 +78,45 @@ export default class OfferService implements OfferServiceInterface {
 
   public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
     const limit = DEFAULT_OFFER_COUNT;
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1, rating: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'},
-          rating: { $avg: '$comments.rating'} }
-      },
-      { $unset: 'comments' },
-    ]);
 
     return this.offerModel
       .find({'isFavorite': true}, {}, {limit})
       .sort({createdAt: SortType.Down})
       .populate(['userId'])
       .exec();
+  }
+
+  public async calcRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    const aggregation = [
+      { $match: { _id: offerId } }, // Находим фильм по идентификатору
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'offerId',
+          as: 'comments',
+        },
+      },
+      {
+        $unwind: '$comments'
+      },
+      {
+        $group: {
+          _id: offerId,
+          rating: { $avg: '$comments.rating' }, // Рассчитываем средний рейтинг комментариев
+        },
+      },
+    ];
+
+    const result = await this.offerModel.aggregate(aggregation).exec();
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const rating = result[0].rating;
+
+    return await this.offerModel.findByIdAndUpdate(offerId, {rating}).exec();
   }
 
   public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {

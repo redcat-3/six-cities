@@ -74,9 +74,6 @@ export default class UpdateOfferDto {
   @IsOptional()
   @IsInt({message: 'Comment count must be an integer'})
   public commentCount!: number;
-  // public static async findBySpecies(this: ReturnModelType<typeof OfferEntity>, commentCount: number) {
-  //   return this.getCommentsCount({ commentCount }).exec();
-  // }
 
   @IsOptional()
   @IsInt({message: 'Latitude count must be an integer'})

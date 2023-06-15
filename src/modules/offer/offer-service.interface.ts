@@ -14,4 +14,5 @@ export interface OfferServiceInterface {
   findPremiumOffers(): Promise<DocumentType<OfferEntity>[]>;
   findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]>;
   changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  calcRating(filmId: string): Promise<DocumentType<OfferEntity> | null>;
 }
