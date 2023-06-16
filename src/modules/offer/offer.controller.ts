@@ -40,7 +40,7 @@ export default class OfferController extends Controller {
       middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
     });
     this.addRoute({
-      path: '/:offerId',
+      path: '/favorite/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
       middlewares: [
@@ -49,7 +49,7 @@ export default class OfferController extends Controller {
       ]
     });
     this.addRoute({
-      path: '/:offerId',
+      path: '/favorite/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
@@ -67,7 +67,7 @@ export default class OfferController extends Controller {
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
-    this.addRoute({ path: '/premium', method: HttpMethod.Get, handler: this.indexPremiumOffers });
+    this.addRoute({ path: '/favorite/premium', method: HttpMethod.Get, handler: this.indexPremiumOffers });
     this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.indexFavoriteOffers });
     this.addRoute({
       path: '/favorite/:offerId',

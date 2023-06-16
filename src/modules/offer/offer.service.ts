@@ -62,7 +62,7 @@ export default class OfferService implements OfferServiceInterface {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     return this.offerModel
       .find({users: userId}, {}, {limit})
-      .populate(['userId'])
+      .populate(['hostId'])
       .exec();
   }
 
@@ -70,9 +70,9 @@ export default class OfferService implements OfferServiceInterface {
     const limit = DEFAULT_PREMIUM_COUNT;
 
     return this.offerModel
-      .find({'isPremium': true}, {}, {limit})
+      .find({isPremium: true}, {}, {limit})
       .sort({createdAt: SortType.Down})
-      .populate(['userId'])
+      .populate(['hostId'])
       .exec();
   }
 
@@ -80,75 +80,38 @@ export default class OfferService implements OfferServiceInterface {
     const limit = DEFAULT_OFFER_COUNT;
 
     return this.offerModel
-      .find({'isFavorite': true}, {}, {limit})
+      .find({isFavorite: true}, {}, {limit})
       .sort({createdAt: SortType.Down})
-      .populate(['userId'])
+      .populate(['hostId'])
       .exec();
-  }
-
-  public async calcRating(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    const aggregation = [
-      { $match: { _id: offerId } }, // Находим фильм по идентификатору
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'offerId',
-          as: 'comments',
-        },
-      },
-      {
-        $unwind: '$comments'
-      },
-      {
-        $group: {
-          _id: offerId,
-          rating: { $avg: '$comments.rating' }, // Рассчитываем средний рейтинг комментариев
-        },
-      },
-    ];
-
-    const result = await this.offerModel.aggregate(aggregation).exec();
-
-    if (result.length === 0) {
-      return null;
-    }
-
-    const rating = result[0].rating;
-
-    return await this.offerModel.findByIdAndUpdate(offerId, {rating}).exec();
   }
 
   public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'} }
-      },
-      { $unset: 'comments' },
-    ]);
-
+    const currentOffer = await this.offerModel.findById(offerId);
+    if (!currentOffer) {
+      return null;
+    }
     return this.offerModel
-      .findById(offerId)
-      .aggregate([
-        { $set: { '$isFavorite': '$!isFavorite' } }
-      ])
-      .populate(['userId'])
+      .findByIdAndUpdate(
+        offerId,
+        {
+          '$set': { isFavorite: !currentOffer.isFavorite }
+        })
       .exec();
   }
 
-  public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  public async addComment(offerId: string, newRating: number): Promise<DocumentType<OfferEntity> | null> {
+    const currentOffer = await this.offerModel.findById(offerId);
+    if (!currentOffer) {
+      return null;
+    }
     return this.offerModel
-      .findByIdAndUpdate(offerId, {'$inc': {
-        commentCount: 1,
-      }}).exec();
+      .findByIdAndUpdate(
+        offerId,
+        {
+          '$inc': { commentCount: 1 },
+          '$set': { rating: ((currentOffer.rating + newRating) / (currentOffer.commentCount + 1)).toFixed(1)}
+        })
+      .exec();
   }
 }
