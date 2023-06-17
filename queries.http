@@ -5,7 +5,7 @@ GET http://localhost:3123/api HTTP/1.1
 
 # Пользователи
 ## Регистрация пользователя
-POST http://localhost:3000/users/register HTTP/1.1
+POST http://localhost:4000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
@@ -15,9 +15,11 @@ Content-Type: application/json
   "isPro": "true",
   "password": "shining"
 }
+
 ###
+
 ## Авторизация пользователя
-POST http://localhost:3000/users/login HTTP/1.1
+POST http://localhost:4000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
@@ -30,22 +32,23 @@ Content-Type: application/json
 # Объявления
 ## Объявление по идентификатору
 
-GET http://localhost:4000/offers/favorite/6487ea2578dd3e6ecdbcfbd7 HTTP/1.1
+GET http://localhost:4000/offers/favorite/premium/64882026088e008f213d3e67 HTTP/1.1
 
 ###
+
 ## Список объявлений
 
 GET http://localhost:4000/offers HTTP/1.1
 
 ###
-## Создание объявления
 
+## Создание объявления
 POST http://localhost:4000/offers HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "lkgs;lkfdjgs;lkfdj;lskjlk",
-  "description": "hkhdkfylkjfhs  gfjhgkfhj jfkhgkjhsflkjhlkjfh jlkjlklkf;lk;lkl",
+  "title": "Beautiful & luxurious studio at great location",
+  "description": "A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam",
   "city":	"Amsterdam",
   "previewImage": "billy-summers.png",
   "images": ["billy-summersgtg.png"],
@@ -54,7 +57,7 @@ Content-Type: application/json
   "type": "apartment",
   "bedroomsNumber": 2,
   "maxAdultsNumber": 2,
-    "price": 140,
+  "price": 1400,
   "features": ["Washer", "Fridge"],
   "hostId": "6485f358299152496b800a62",
   "latitude": 50.9903,
@@ -62,19 +65,18 @@ Content-Type: application/json
 }
 
 ###
-## Удаление объявления
 
-DELETE http://localhost:4000/offers/favorite/6487ea2578dd3e6ecdbcfbd7 HTTP/1.1
+## Удаление объявления
+DELETE http://localhost:4000/offers/6487ea2578dd3e6ecdbcfbd7 HTTP/1.1
 
 ###
 ## Обновление объявления
-
-PATCH http://localhost:4000/offers/6487ea2578dd3e6ecdbcfbd7 HTTP/1.1
+PATCH http://localhost:4000/offers/64882026088e008f213d3e67 HTTP/1.1
 Content-Type: application/json
 
 {
   "title": "Ночной дозор 3",
-  "description": "Проверка обновления",
+  "description": "Проверка обновления, Проверка обновления",
   "price": 1100
 }
 
@@ -89,27 +91,8 @@ GET http://localhost:4000/offers/favorite HTTP/1.1
 
 ###
 ## Изменение статуса "избранное" у объявления
-POST http://localhost:4000/offers/favorite/62711a50b0e24a624d49ffdc HTTP/1.1
+PATCH http://localhost:4000/offers/favorite/64882026088e008f213d3e69 HTTP/1.1
 Content-Type: application/json
-
-{
-  "title": "Билли Саммерс",
-  "description": "Новый детективный роман от короля ужасов.",
-  "city":	"Amsterdam",
-  "previewImage": "billy-summers.png",
-  "images": ["billy-summers.png"],
-  "isPremium": true,
-  "isFavorite": true,
-  "price": 1400,
-  "type": "apartment",
-  "bedroomsNumber": 1,
-  "maxAdultsNumber": 1,
-  "price": 1408,
-  "features": ["Air conditioning"],
-  "hostId": "62823cb2c5a64ce9f1b50ec8",
-  "latitude": 50.9903,
-  "longitude": 4.8902,
-}
 
 ###
 
@@ -118,15 +101,16 @@ POST http://localhost:4000/comments HTTP/1.1
 Content-Type: application/json
 
 {
-  "text": "Tjjfoihh vjghkhlhj;kjk fhgfj",
-  "rating": 3,
-  "offerId": "6487ea2578dd3e6ecdbcfbd7",
+  "text": "getaway experience in the country. In our beautiful screened Pondhouse, you can gaze at the stars and listen to the sounds of nature from your cozy warm bed",
+  "rating": 2,
+  "offerId": "64882026088e008f213d3e67",
   "userId": "6478a0b846cd0db31f619d97"
 }
 
 ###
+
 ## Список комментариев к объявлению
-GET http://localhost:4000/offers/6487ea2578dd3e6ecdbcfbd7/comments HTTP/1.1
+GET http://localhost:4000/offers/64882026088e008f213d3e67/comments HTTP/1.1
 
 ###
 ## Отправка аватарки пользователю

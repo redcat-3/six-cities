@@ -11,8 +11,8 @@ export default class UpdateOfferDto {
   public title!: string;
 
   @IsOptional()
-  @MinLength(Description.Min, {message: 'Minimum title length must be $Description.Min'})
-  @MaxLength(Description.Max, {message: 'Maximum title length must be $Description.Max'})
+  @MinLength(Description.Min, {message: 'Minimum title length must be $constraint1'})
+  @MaxLength(Description.Max, {message: 'Maximum title length must be $constraint1'})
   public description!: string;
 
   @IsOptional()

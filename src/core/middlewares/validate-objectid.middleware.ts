@@ -12,12 +12,8 @@ export class ValidateObjectIdMiddleware implements MiddlewareInterface {
   public execute({params}: Request, _res: Response, next: NextFunction): void {
     const objectId = params[this.param];
 
-    if (objectId === 'favorite' || objectId === 'premium') {
+    if (Types.ObjectId.isValid(objectId)) {
       return next();
-    } else {
-      if (Types.ObjectId.isValid(objectId)) {
-        return next();
-      }
     }
 
     throw new HttpError(

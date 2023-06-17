@@ -96,7 +96,8 @@ export default class OfferService implements OfferServiceInterface {
         offerId,
         {
           '$set': { isFavorite: !currentOffer.isFavorite }
-        })
+        },
+        {new: true})
       .exec();
   }
 
@@ -111,7 +112,8 @@ export default class OfferService implements OfferServiceInterface {
         {
           '$inc': { commentCount: 1 },
           '$set': { rating: ((currentOffer.rating + newRating) / (currentOffer.commentCount + 1)).toFixed(1)}
-        })
+        },
+        {new: true})
       .exec();
   }
 }

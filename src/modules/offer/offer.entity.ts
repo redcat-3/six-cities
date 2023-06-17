@@ -21,12 +21,6 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public description!: string;
 
   @prop({
-    required: false,
-    name: 'createdAt'
-  })
-  public postDate?: Date;
-
-  @prop({
     type: () => String,
     enum: City,
     required: true

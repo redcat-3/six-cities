@@ -40,7 +40,7 @@ export default class OfferController extends Controller {
       middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
     });
     this.addRoute({
-      path: '/favorite/:offerId',
+      path: '/favorite/premium/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
       middlewares: [
@@ -49,7 +49,7 @@ export default class OfferController extends Controller {
       ]
     });
     this.addRoute({
-      path: '/favorite/:offerId',
+      path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
