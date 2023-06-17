@@ -16,6 +16,7 @@ import CommentRdo from '../comment/rdo/comment.rdo.js';
 import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../core/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
+import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
 
 type ParamsGetOffer = {
   offerId: string;
@@ -37,7 +38,10 @@ export default class OfferController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateOfferDto)
+      ]
     });
     this.addRoute({
       path: '/favorite/premium/:offerId',
@@ -53,6 +57,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
@@ -62,18 +67,32 @@ export default class OfferController extends Controller {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
-    this.addRoute({ path: '/favorite/premium', method: HttpMethod.Get, handler: this.indexPremiumOffers });
-    this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.indexFavoriteOffers });
+    this.addRoute({
+      path: '/favorite/premium',
+      method: HttpMethod.Get,
+      handler: this.indexPremiumOffers,
+      middlewares: [new PrivateRouteMiddleware()]
+    });
+    this.addRoute({
+      path: '/favorite',
+      method: HttpMethod.Get,
+      handler: this.indexFavoriteOffers,
+      middlewares: [new PrivateRouteMiddleware()]
+    });
     this.addRoute({
       path: '/favorite/:offerId',
       method: HttpMethod.Patch,
       handler: this.changeFavorite,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId')
+      ]
     });
     this.addRoute({
       path: '/:offerId/comments',
@@ -101,10 +120,10 @@ export default class OfferController extends Controller {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
+    { body, user }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({ ...body, hostId: user.id });
     this.created(res, fillDTO(OfferRdo, result));
   }
 

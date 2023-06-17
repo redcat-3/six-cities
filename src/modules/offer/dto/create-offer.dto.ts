@@ -1,5 +1,5 @@
 import { OfferType } from '../../../types/offer-type.enum.js';
-import { IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude } from 'class-validator';
+import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude } from 'class-validator';
 import { City } from '../../../types/city.enum.js';
 import { MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price } from '../offer.constant.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
@@ -49,7 +49,6 @@ export default class CreateOfferDto {
   @IsEnum(FeatureType, {message: 'type must be &OfferType', each: true})
   public features!: FeatureType[];
 
-  @IsMongoId({message: 'hostId field must be valid an id'})
   public hostId!: string;
 
   @IsLatitude({message: 'Latitude count must be a valid latitude coordinate'})
