@@ -1,16 +1,15 @@
+import { City } from './city.enum';
+import { FeatureType } from './feature-type.enum';
 import { OfferType } from './offer-type.enum';
 import { User } from './user.type';
 
 export type Offer = {
   title: string;
   description: string;
-  postDate: Date;
-  city:	string;
+  city:	City;
   previewImage: string;
   images: string[];
   isPremium: boolean;
-  isFavorite: boolean;
-  rating: number;
   type: OfferType;
   bedroomsNumber: number;
   maxAdultsNumber: number;

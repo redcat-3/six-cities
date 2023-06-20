@@ -10,7 +10,6 @@ import { ControllerInterface } from '../core/controller/controller.interface.js'
 import { ExceptionFilterInterface } from '../core/expception-filters/exception-filter.interface.js';
 import bodyParser from 'body-parser';
 import { booleanize } from 'express-query-booleanizer';
-import { startRequest } from '../../src/core/logger/start-request.js';
 import { AuthenticateMiddleware } from '../core/middlewares/authenticate.middleware.js';
 
 @injectable()
@@ -71,7 +70,6 @@ export default class RestApplication {
     );
     const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
     this.expressApplication.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
-    this.expressApplication.use(startRequest);
 
     this.logger.info('Global middleware initialization completed');
   }

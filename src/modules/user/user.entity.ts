@@ -28,12 +28,19 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({required: true, default: ''})
   private password?: string;
 
+  @prop({
+    required: false,
+    default: []
+  })
+  public favoriteOffers!: string[];
+
   constructor(userData: User) {
     super();
     this.email = userData.email;
     this.avatarPath = userData.avatarPath ? userData.avatarPath : DEFAULT_USER_AVATAR;
     this.name = userData.name;
     this.isPro = userData.isPro;
+    this.favoriteOffers = [];
   }
 
   public setPassword(password: string, salt: string) {
@@ -47,6 +54,24 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   public verifyPassword(password: string, salt: string) {
     const hashPassword = createSHA256(password, salt);
     return hashPassword === this.password;
+  }
+
+  public isFavoriteOffers(offerId: string) {
+    return this.favoriteOffers.includes(offerId);
+  }
+
+  public getFavoriteOffers() {
+    return this.favoriteOffers;
+  }
+
+  public deleteFavoriteOffers(offerId: string) {
+    const index = this.favoriteOffers.findIndex((x) => x === offerId);
+    this.favoriteOffers.splice(index, 1);
+    return this.favoriteOffers;
+  }
+
+  public addFavoriteOffers(offerId: string) {
+    return this.favoriteOffers.push(offerId);
   }
 }
 export const UserModel = getModelForClass(UserEntity);
