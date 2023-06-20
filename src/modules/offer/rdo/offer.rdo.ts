@@ -27,7 +27,7 @@ export default class OfferRdo {
   public isPremium!: boolean;
 
   @Expose()
-  public isFavorite!: boolean;
+  public isFavorite!: false;
 
   @Expose()
   public rating!: number;

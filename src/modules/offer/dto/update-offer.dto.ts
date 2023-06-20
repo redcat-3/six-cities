@@ -6,13 +6,13 @@ import { FeatureType } from '../../../types/feature-type.enum.js';
 
 export default class UpdateOfferDto {
   @IsOptional()
-  @MinLength(Title.Min, {message: 'Minimum title length must be $Title.Min'})
-  @MaxLength(Title.Max, {message: 'Maximum title length must be $Title.Max'})
+  @MinLength(Title.Min, {message: `Minimum title length must be ${Title.Min}`})
+  @MaxLength(Title.Max, {message: `Maximum title length must be ${Title.Max}`})
   public title!: string;
 
   @IsOptional()
-  @MinLength(Description.Min, {message: 'Minimum title length must be $constraint1'})
-  @MaxLength(Description.Max, {message: 'Maximum title length must be $constraint1'})
+  @MinLength(Description.Min, {message: `Minimum title length must be ${Description.Min}`})
+  @MaxLength(Description.Max, {message: `Maximum title length must be ${Description.Max}`})
   public description!: string;
 
   @IsOptional()
@@ -35,10 +35,6 @@ export default class UpdateOfferDto {
   @IsOptional()
   @IsBoolean({message: 'Field isPremium must be boolean'})
   public isPremium!: boolean;
-
-  @IsOptional()
-  @IsBoolean({message: 'Field isFavorite must be boolean'})
-  public isFavorite!: boolean;
 
   @IsOptional()
   @IsEnum(OfferType, {message: 'type must be &OfferType'})

@@ -12,6 +12,7 @@ import { HttpMethod } from '../../types/http-method.enum.js';
 import { fillDTO } from '../../core/helpers/common.js';
 import CommentRdo from './rdo/comment.rdo.js';
 import {ValidateDtoMiddleware} from '../../core/middlewares/validate-dto.middleware.js';
+import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
 
 export default class CommentController extends Controller {
   constructor(
@@ -27,13 +28,14 @@ export default class CommentController extends Controller {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDto),
       ]
     });
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateCommentDto>,
+    { body, user }: Request<Record<string, unknown>, Record<string, unknown>, CreateCommentDto>,
     res: Response
   ): Promise<void> {
 
@@ -45,7 +47,7 @@ export default class CommentController extends Controller {
       );
     }
 
-    const comment = await this.commentService.create(body);
+    const comment = await this.commentService.create({ ...body, userId: user.id });
     await this.offerService.addComment(body.offerId, body.rating);
     this.created(res, fillDTO(CommentRdo, comment));
   }

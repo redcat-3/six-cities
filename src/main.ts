@@ -11,8 +11,8 @@ async function bootstrap() {
   const mainContainer = Container.merge(
     createRestApplicationContainer(),
     createUserContainer(),
-    createOfferContainer(),
     createCommentContainer(),
+    createOfferContainer(),
   );
 
   const application = mainContainer.get<RestApplication>(AppComponent.RestApplication);

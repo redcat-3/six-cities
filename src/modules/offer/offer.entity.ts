@@ -39,8 +39,11 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({required: true})
   public isPremium!: boolean;
 
-  @prop({required: true})
-  public isFavorite!: boolean;
+  @prop({
+    required: true,
+    default: false,
+  })
+  private isFavorite?: boolean;
 
   @prop({default: 0})
   public rating!: number;
@@ -82,6 +85,15 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({required: true})
   public longitude!: number;
+
+  public setIsFavorite(newValue: boolean) {
+    this.isFavorite = newValue;
+    return this.isFavorite;
+  }
+
+  public getIsFavorite() {
+    return this.isFavorite;
+  }
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

@@ -19,22 +19,29 @@ export default class OfferService implements OfferServiceInterface {
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
     this.logger.info(`New offer created: ${dto.title}`);
-
     return result;
   }
 
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-
     return this.offerModel
-      .findById(offerId)
+      .findOne({offerId})
       .populate(['hostId'])
       .exec();
   }
 
   public async find(): Promise<DocumentType<OfferEntity>[]>{
-
     return this.offerModel
       .find()
+      .sort({createdAt: SortType.Down})
+      .populate(['hostId'])
+      .exec();
+  }
+
+  public async findMany(offerIds: () => string[]): Promise<DocumentType<OfferEntity>[]>{
+    return this.offerModel
+      .find({
+        _id: {$in: offerIds }
+      })
       .sort({createdAt: SortType.Down})
       .populate(['hostId'])
       .exec();
@@ -73,31 +80,6 @@ export default class OfferService implements OfferServiceInterface {
       .find({isPremium: true}, {}, {limit})
       .sort({createdAt: SortType.Down})
       .populate(['hostId'])
-      .exec();
-  }
-
-  public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
-    const limit = DEFAULT_OFFER_COUNT;
-
-    return this.offerModel
-      .find({isFavorite: true}, {}, {limit})
-      .sort({createdAt: SortType.Down})
-      .populate(['hostId'])
-      .exec();
-  }
-
-  public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    const currentOffer = await this.offerModel.findById(offerId);
-    if (!currentOffer) {
-      return null;
-    }
-    return this.offerModel
-      .findByIdAndUpdate(
-        offerId,
-        {
-          '$set': { isFavorite: !currentOffer.isFavorite }
-        },
-        {new: true})
       .exec();
   }
 
