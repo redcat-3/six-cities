@@ -1,7 +1,7 @@
-import {OfferType} from '../../../types/rent-type.enum.js';
+import {RentType} from '../../../types/rent-type.enum.js';
 import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional } from 'class-validator';
 import {MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price, Latitude, Longitude } from '../offer.constant.js';
-import { City } from '../../../types/city-names.enum.js';
+import { CityNames } from '../../../types/city-names.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
 export default class UpdateOfferDto {
@@ -20,7 +20,7 @@ export default class UpdateOfferDto {
   public postDate!: Date;
 
   @IsOptional()
-  @IsEnum(City, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
+  @IsEnum(CityNames, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
   public city!:	string;
 
   @IsOptional()
@@ -37,8 +37,8 @@ export default class UpdateOfferDto {
   public isPremium!: boolean;
 
   @IsOptional()
-  @IsEnum(OfferType, {message: 'type must be &OfferType'})
-  public type!: OfferType;
+  @IsEnum(RentType, {message: 'type must be &OfferType'})
+  public type!: RentType;
 
   @IsOptional()
   @IsInt({message: 'BedroomsNumber must be an integer'})
@@ -65,7 +65,7 @@ export default class UpdateOfferDto {
 
   @IsOptional()
   @IsMongoId({message: 'hostId field must be valid an id'})
-  public hostId!: string;
+  public userId!: string;
 
   @IsOptional()
   @IsInt({message: 'Comment count must be an integer'})

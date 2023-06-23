@@ -12,12 +12,13 @@ import { Offer } from '../../types/offer.type.js';
 import { UserModel } from '../../modules/user/user.entity.js';
 import { OfferModel } from '../../modules/offer/offer.entity.js';
 import { DatabaseClientInterface } from '../database-client/database-client.interface.js';
-
-const DEFAULT_DB_PORT = '27017';
-const DEFAULT_USER_PASSWORD = '123456';
+import { ConfigInterface } from '../config/config.interface.js';
+import { RestSchema } from '../config/rest.schema.js';
+import ConfigService from '../config/config.service.js';
 
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
+  private config: ConfigInterface<RestSchema>;
   private userService!: UserServiceInterface;
   private offerService!: OfferServiceInterface;
   private databaseService!: DatabaseClientInterface;
@@ -32,16 +33,17 @@ export default class ImportCommand implements CliCommandInterface {
     this.offerService = new OfferService(this.logger, OfferModel);
     this.userService = new UserService(this.logger, UserModel);
     this.databaseService = new MongoClientService(this.logger);
+    this.config = new ConfigService(this.logger);
   }
 
   private async saveOffer(offer: Offer) {
     const user = await this.userService.findOrCreate({
-      ...offer.host,
-      password: DEFAULT_USER_PASSWORD
+      ...offer.user,
+      password: this.config.get('DB_PASSWORD')
     }, this.salt);
     await this.offerService.create({
       ...offer,
-      hostId: user.id,
+      userId: user.id,
     });
   }
 
@@ -57,8 +59,12 @@ export default class ImportCommand implements CliCommandInterface {
   }
 
   public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
-    const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
+    const uri = getMongoURI(login, password, host, this.config.get('DB_PORT'), dbname);
     this.salt = salt;
+
+    if(filename === undefined) {
+      console.log('Filename is undefined');
+    }
 
     await this.databaseService.connect(uri);
     const fileReader = new TSVFileReader(filename.trim());
@@ -66,10 +72,10 @@ export default class ImportCommand implements CliCommandInterface {
     fileReader.on('line', this.onLine);
     fileReader.on('end', this.onComplete);
 
-    try {
-      await fileReader.read();
-    } catch(err) {
-      console.log(`Can't read the file: ${getErrorMessage(err)}`);
-    }
+    await fileReader
+      .read()
+      .catch((error) => {
+        console.log(`Can't read file: ${getErrorMessage(error)}`);
+      });
   }
 }

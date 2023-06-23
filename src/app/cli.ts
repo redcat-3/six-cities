@@ -7,7 +7,7 @@ export default class CLIApplication {
   private commands: Record<string, CliCommandInterface> = {};
   private readonly defaultCommand = '--help';
 
-  private parseCommand(cliArguments: Record<string, string[]>): ParsedCommand {
+  private parseCommand(cliArguments: string[]): ParsedCommand {
     const parsedCommand: ParsedCommand = {};
     let command = '';
 

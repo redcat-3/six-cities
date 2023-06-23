@@ -1,6 +1,6 @@
-import { OfferType } from '../../../types/rent-type.enum.js';
+import { RentType } from '../../../types/rent-type.enum.js';
 import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude } from 'class-validator';
-import { City } from '../../../types/city-names.enum.js';
+import { CityNames } from '../../../types/city-names.enum.js';
 import { MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price } from '../offer.constant.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
@@ -13,8 +13,8 @@ export default class CreateOfferDto {
   @MaxLength(Description.Max, {message: `Maximum title length must be ${Description.Max}`})
   public description!: string;
 
-  @IsEnum(City, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
-  public city!:	City;
+  @IsEnum(CityNames, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
+  public city!:	CityNames;
 
   @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
   public previewImage!: string;
@@ -25,8 +25,8 @@ export default class CreateOfferDto {
   @IsBoolean({message: 'Field isPremium must be boolean'})
   public isPremium!: boolean;
 
-  @IsEnum(OfferType, {message: 'type must be OfferType'})
-  public type!: OfferType;
+  @IsEnum(RentType, {message: 'type must be OfferType'})
+  public type!: RentType;
 
   @IsInt({message: 'BedroomsNumber must be an integer'})
   @Min(RoomsNumber.Min, {message: `Minimum bedroomsNumber is ${RoomsNumber.Min}`})
@@ -46,7 +46,7 @@ export default class CreateOfferDto {
   @IsEnum(FeatureType, {message: 'type must be FeatureType', each: true})
   public features!: FeatureType[];
 
-  public hostId!: string;
+  public userId!: string;
 
   @IsLatitude({message: 'Latitude count must be a valid latitude coordinate'})
   public latitude!: number;

@@ -8,8 +8,6 @@ import { getMongoURI } from '../core/helpers/index.js';
 import express, { Express } from 'express';
 import { ControllerInterface } from '../core/controller/controller.interface.js';
 import { ExceptionFilterInterface } from '../core/expception-filters/exception-filter.interface.js';
-import bodyParser from 'body-parser';
-import { booleanize } from 'express-query-booleanizer';
 import { AuthenticateMiddleware } from '../core/middlewares/authenticate.middleware.js';
 
 @injectable()
@@ -48,7 +46,7 @@ export default class RestApplication {
     const port = this.config.get('PORT');
     this.expressApplication.listen(port);
 
-    this.logger.info(`🚀Server started on http://localhost:${this.config.get('PORT')}`);
+    this.logger.info(`🚀Server started on http://localhost:${port}`);
   }
 
   private async _initRoutes() {
@@ -62,8 +60,6 @@ export default class RestApplication {
   private async _initMiddleware() {
     this.logger.info('Global middleware initialization…');
     this.expressApplication.use(express.json());
-    this.expressApplication.use(bodyParser.json());
-    this.expressApplication.use(booleanize());
     this.expressApplication.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
@@ -82,13 +78,13 @@ export default class RestApplication {
 
   public async init() {
     this.logger.info('Application initialization…');
-    this.logger.info(`Get value from env $PORT: ${this.config.get('PORT')}`);
 
-    this.logger.info('Init database…');
-    await this._initDb();
+    await this._initDb()
+      .catch(console.error);
     await this._initMiddleware();
     await this._initRoutes();
     await this._initExceptionFilters();
-    await this._initServer();
+    await this._initServer()
+      .catch(console.error);
   }
 }

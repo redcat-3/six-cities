@@ -8,13 +8,11 @@ import asyncHandler from 'express-async-handler';
 
 @injectable()
 export abstract class Controller implements ControllerInterface {
-  private readonly _router: Router;
+  private readonly _router = Router();
 
   constructor(
     protected readonly logger: LoggerInterface
-  ) {
-    this._router = Router();
-  }
+  ) {}
 
   get router() {
     return this._router;
