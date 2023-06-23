@@ -74,10 +74,9 @@ export default class UserController extends Controller {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
+    { body }: Request<UnknownRecord, UnknownRecord, CreateUserDto>,
     res: Response,
   ): Promise <void> {
-    console.log({body});
     const user = await this
       .userService
       .verifyUser(body, this.configService.get('SALT'));
@@ -107,7 +106,7 @@ export default class UserController extends Controller {
 
     if (! user) {
       throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
+        StatusCodes.BAD_REQUEST,
         'Unauthorized',
         'UserController'
       );
@@ -157,7 +156,7 @@ export default class UserController extends Controller {
         'UserController'
       );
     }
-    const favoriteOffers = foundedUser.getFavoriteOffers;
+    const favoriteOffers = foundedUser.getFavoriteOffers();
     if(! favoriteOffers || favoriteOffers.length === 0) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
@@ -165,7 +164,7 @@ export default class UserController extends Controller {
         'UserController'
       );
     }
-    const offers = await this.offerService.findMany(favoriteOffers);
+    const offers = await this.offerService.findFavorite(favoriteOffers);
     this.ok(res, fillDTO(OfferIndexRdo, offers));
   }
 }

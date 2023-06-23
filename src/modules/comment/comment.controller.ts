@@ -12,7 +12,6 @@ import { HttpMethod } from '../../types/http-method.enum.js';
 import { fillDTO } from '../../core/helpers/common.js';
 import CommentRdo from './rdo/comment.rdo.js';
 import {ValidateDtoMiddleware} from '../../core/middlewares/validate-dto.middleware.js';
-import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
 
 export default class CommentController extends Controller {
   constructor(
@@ -28,7 +27,6 @@ export default class CommentController extends Controller {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateCommentDto),
       ]
     });

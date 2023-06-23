@@ -3,6 +3,8 @@ import { nanoid } from 'nanoid';
 import multer, { diskStorage } from 'multer';
 import mime from 'mime-types';
 import { MiddlewareInterface } from './middleware.interface.js';
+import HttpError from '../errors/http-error.js';
+import { StatusCodes } from 'http-status-codes';
 
 export class UploadFileMiddleware implements MiddlewareInterface {
   constructor(
@@ -11,6 +13,13 @@ export class UploadFileMiddleware implements MiddlewareInterface {
   ) {}
 
   public async execute(req: Request, res: Response, next: NextFunction): Promise<void> {
+    if(!(/\.(jpe?g|png)$/i).test(this.fieldName)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'File should be end with any one of the following extensions: jpg, jpeg, png',
+        'UploadFileMiddleware'
+      );
+    }
     const storage = diskStorage({
       destination: this.uploadDirectory,
       filename: (_req, file, callback) => {

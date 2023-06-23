@@ -1,3 +1,4 @@
+import EventEmitter from 'node:events';
 import { FileWriterInterface } from './file-writer.interface.js';
 import { WriteStream } from 'node:fs';
 import { createWriteStream } from 'node:fs';

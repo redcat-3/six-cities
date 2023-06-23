@@ -1,8 +1,8 @@
 export enum RentType {
-  apartment = 'apartment',
-  house = 'house',
-  room = 'room',
-  hotel = 'hotel'
+  APARTMENT = 'apartment',
+  HOUSE = 'house',
+  ROOM = 'room',
+  HOTEL = 'hotel'
 }
 
 

@@ -2,6 +2,7 @@ import { User } from '../../types/user.type.js';
 import typegoose, { defaultClasses, getModelForClass } from '@typegoose/typegoose';
 import { createSHA256 } from '../../core/helpers/common.js';
 import { DEFAULT_USER_AVATAR } from './user.constant.js';
+import { UserType } from '../../types/user-type.enum.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -22,8 +23,12 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   @prop({ required: true, default: '' })
   public name: string;
 
-  @prop({ required: true, default: false })
-  public isPro: boolean;
+  @prop({
+    required: true,
+    default: false,
+    enum: UserType,
+  })
+  public isPro: UserType;
 
   @prop({required: true, default: ''})
   private password?: string;
@@ -37,7 +42,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor(userData: User) {
     super();
     this.email = userData.email;
-    this.avatarPath = userData.avatarPath ? userData.avatarPath : DEFAULT_USER_AVATAR;
+    this.avatarPath = userData.avatarPath || DEFAULT_USER_AVATAR;
     this.name = userData.name;
     this.isPro = userData.isPro;
     this.favoriteOffers = [];

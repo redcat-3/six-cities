@@ -19,4 +19,4 @@ async function bootstrap() {
   await application.init();
 }
 
-bootstrap();
+bootstrap().catch(console.error);

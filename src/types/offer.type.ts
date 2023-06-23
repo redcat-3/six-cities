@@ -11,8 +11,8 @@ export type Offer = {
   images: string[];
   isPremium: boolean;
   type: RentType;
-  bedroomsNumber: number;
-  maxAdultsNumber: number;
+  roomsNumber: number;
+  gestNumber: number;
   price: number;
   features: FeatureType[];
   user: User;

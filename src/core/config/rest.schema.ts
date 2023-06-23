@@ -1,6 +1,5 @@
 import convict from 'convict';
 import validator from 'convict-format-with-validator';
-import { config } from 'dotenv';
 
 convict.addFormats(validator);
 
@@ -21,13 +20,13 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Port for incoming connections',
     format: 'port',
     env: 'PORT',
-    default: process.env.REACT_APP_DEFAULT_PORT,
+    default: null,
   },
   SALT: {
     doc: 'Salt for password hash',
     format: String,
     env: 'SALT',
-    default: process.env.REACT_APP_DEFAULT_SALT
+    default: null
   },
   DB_HOST: {
     doc: 'IP address of the database server (MongoDB)',
@@ -57,7 +56,7 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Database name (MongoDB)',
     format: String,
     env: 'DB_NAME',
-    default: 'buy-and-sell'
+    default: null
   },
   UPLOAD_DIRECTORY: {
     doc: 'Directory for upload files',

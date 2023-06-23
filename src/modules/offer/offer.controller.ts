@@ -17,10 +17,11 @@ import CommentRdo from '../comment/rdo/comment.rdo.js';
 import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../core/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
-import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
+import { UnknownRecord } from '../../types/unknown-record.type.js';
 
 type ParamsGetOffer = {
   offerId: string;
+  city: string;
 }
 
 @injectable()
@@ -40,7 +41,6 @@ export default class OfferController extends Controller {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateOfferDto)
       ]
     });
@@ -58,7 +58,6 @@ export default class OfferController extends Controller {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
@@ -68,24 +67,21 @@ export default class OfferController extends Controller {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDto),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
     this.addRoute({
-      path: '/favorite/premium',
+      path: '/favorite/premium/:city',
       method: HttpMethod.Get,
       handler: this.indexPremiumOffers,
-      middlewares: [new PrivateRouteMiddleware()]
     });
     this.addRoute({
       path: '/favorite/:offerId',
       method: HttpMethod.Patch,
       handler: this.changeFavorite,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId')
       ]
     });
@@ -118,7 +114,7 @@ export default class OfferController extends Controller {
     { body, user }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.create({ ...body, hostId: user.id });
+    const result = await this.offerService.create({ ...body, userId: user.id });
     this.created(res, fillDTO(OfferRdo, result));
   }
 
@@ -135,7 +131,7 @@ export default class OfferController extends Controller {
   }
 
   public async update(
-    { body, params }: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>, UpdateOfferDto>,
+    { body, params }: Request<core.ParamsDictionary | ParamsGetOffer, UnknownRecord, UpdateOfferDto>,
     res: Response
   ): Promise<void> {
     const updatedOffer = await this.offerService.updateById(params.offerId, body);
@@ -143,8 +139,9 @@ export default class OfferController extends Controller {
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
-  public async indexPremiumOffers(_req: Request, res: Response):Promise<void> {
-    const offers = await this.offerService.findPremiumOffers();
+  public async indexPremiumOffers(
+    { params }: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response): Promise<void> {
+    const offers = await this.offerService.findPremiumOffers(params.city);
     this.ok(res, fillDTO(OfferIndexRdo, offers));
   }
 
