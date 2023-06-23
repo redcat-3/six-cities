@@ -1,7 +1,7 @@
-import {OfferType} from '../../../types/offer-type.enum.js';
+import {OfferType} from '../../../types/rent-type.enum.js';
 import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional } from 'class-validator';
 import {MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price, Latitude, Longitude } from '../offer.constant.js';
-import { City } from '../../../types/city.enum.js';
+import { City } from '../../../types/city-names.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
 export default class UpdateOfferDto {

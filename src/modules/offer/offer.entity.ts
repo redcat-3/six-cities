@@ -1,7 +1,7 @@
 import typegoose, { defaultClasses, getModelForClass, Ref } from '@typegoose/typegoose';
 import { UserEntity } from '../user/user.entity.js';
-import { OfferType } from '../../types/offer-type.enum.js';
-import { City } from '../../types/city.enum.js';
+import { OfferType } from '../../types/rent-type.enum.js';
+import { City } from '../../types/city-names.enum.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
 
 const { prop, modelOptions } = typegoose;

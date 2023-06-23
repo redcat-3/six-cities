@@ -1,6 +1,6 @@
-import { City } from './city.enum';
+import { City } from './city-names.enum';
 import { FeatureType } from './feature-type.enum';
-import { OfferType } from './offer-type.enum';
+import { OfferType } from './rent-type.enum';
 import { User } from './user.type';
 
 export type Offer = {
