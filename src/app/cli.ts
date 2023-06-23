@@ -1,15 +1,13 @@
 
 import { CliCommandInterface } from '../core/cli-command/cli-command.interface';
 
-type ParsedCommand = {
-  Record<string, string[]>
-}
+type ParsedCommand = Record<string, string[]>
 
 export default class CLIApplication {
   private commands: Record<string, CliCommandInterface> = {};
   private readonly defaultCommand = '--help';
 
-  private parseCommand(cliArguments: string[]): ParsedCommand {
+  private parseCommand(cliArguments: Record<string, string[]>): ParsedCommand {
     const parsedCommand: ParsedCommand = {};
     let command = '';
 
