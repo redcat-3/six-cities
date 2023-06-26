@@ -1,0 +1,96 @@
+{
+  "api": {
+    "titles": [
+      "Beautiful & luxurious studio at great location",
+      "Wood and stone place",
+      "Nice, cozy, warm big bed apartment",
+      "Perfectly located Castro",
+      "The house among olive "
+    ],
+    "descriptions": [
+      "Страшный рассказ о драконе. Колдовство, предательство и необыкновенный мир фэнтези.",
+      "История про вампиров из маленького городка. Коварство, нестандартный сюжет и необыкновенные приключения священника.",
+      "Идти или остановиться? Вопрос без правильного ответа. Рассказ о долгой и смертельной прогулке.",
+      "Как похудеть и не сойти с ума? А как вернуть вес обратно? Необычная история противостояния.",
+      "Прими звонок и превратись в зомби. Рассказ о зомбировании через средства связи."
+    ],
+    "postDates": [
+      "Wed May 10 2023 18:08:25 GMT+0800 (Иркутск, стандартное время)",
+      "Sat May 13 2023 18:21:02 GMT+0800 (Иркутск, стандартное время)",
+      "2023-02-25T07:31:25.015Z",
+      "2023-02-26T07:31:25.015Z",
+      "2023-03-09T07:31:25.015Z"
+    ],
+    "cities": [
+      "Paris",
+      "Cologne",
+      "Brussels",
+      "Amsterdam",
+      "Hamburg",
+      "Dusseldorf"
+    ],
+    "previewImages": [
+      "https://12.react.pages.academy/static/hotel/17.jpg",
+      "https://12.react.pages.academy/static/hotel/6.jpg",
+      "https://12.react.pages.academy/static/hotel/15.jpg",
+      "https://12.react.pages.academy/static/hotel/19.jpg",
+      "https://12.react.pages.academy/static/hotel/17.jpg"
+    ],
+    "images": [
+      "https://12.react.pages.academy/static/hotel/1.jpg",
+      "https://12.react.pages.academy/static/hotel/2.jpg",
+      "https://12.react.pages.academy/static/hotel/3.jpg",
+      "https://12.react.pages.academy/static/hotel/4.jpg",
+      "https://12.react.pages.academy/static/hotel/5.jpg",
+      "https://12.react.pages.academy/static/hotel/6.jpg",
+      "https://12.react.pages.academy/static/hotel/7.jpg",
+      "https://12.react.pages.academy/static/hotel/8.jpg",
+      "https://12.react.pages.academy/static/hotel/9.jpg",
+      "https://12.react.pages.academy/static/hotel/10.jpg",
+      "https://12.react.pages.academy/static/hotel/11.jpg",
+      "https://12.react.pages.academy/static/hotel/12.jpg",
+      "https://12.react.pages.academy/static/hotel/13.jpg",
+      "https://12.react.pages.academy/static/hotel/14.jpg"
+    ],
+    "types": [
+      "apartment",
+      "house",
+      "room",
+      "hotel"
+    ],
+    "features": [
+      "Breakfast",
+      "Air conditioning",
+      "Laptop friendly workspace",
+      "Baby seat",
+      "Washer",
+      "Towels",
+      "Fridge"
+    ],
+    "emails": [
+      "snow@pisem.local",
+      "president@dka.local",
+      "fish@big.local",
+      "test@pisem.local",
+      "freedom@pisem.local",
+      "rolan@pochta.local",
+      "author@mir.local",
+      "test@lost.loca",
+      "kujo-fan@story.local"
+    ],
+    "names": [
+      "Angelina",
+      "Angel",
+      "Dina",
+      "Tom",
+      "Dima"
+    ],
+    "avatarUrls": [
+      "img/avatar-angelina.jpg",
+      "img/1.png",
+      "img/2.png",
+      "img/3.png",
+      "img/4.png"
+    ]
+  }
+}
