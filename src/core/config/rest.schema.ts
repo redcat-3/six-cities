@@ -12,6 +12,7 @@ export type RestSchema = {
   DB_PORT: string;
   DB_NAME: string;
   UPLOAD_DIRECTORY: string;
+  JWT_SECRET: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -19,7 +20,7 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Port for incoming connections',
     format: 'port',
     env: 'PORT',
-    default: 4000
+    default: null,
   },
   SALT: {
     doc: 'Salt for password hash',
@@ -31,7 +32,7 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'IP address of the database server (MongoDB)',
     format: 'ipaddress',
     env: 'DB_HOST',
-    default: '127.0.0.1'
+    default: null
   },
   DB_USER: {
     doc: 'Username to connect to the database',
@@ -49,13 +50,13 @@ export const configRestSchema = convict<RestSchema>({
     doc: 'Port to connect to the database (MongoDB)',
     format: 'port',
     env: 'DB_PORT',
-    default: '27017',
+    default: null,
   },
   DB_NAME: {
     doc: 'Database name (MongoDB)',
     format: String,
     env: 'DB_NAME',
-    default: 'buy-and-sell'
+    default: null
   },
   UPLOAD_DIRECTORY: {
     doc: 'Directory for upload files',
@@ -63,4 +64,10 @@ export const configRestSchema = convict<RestSchema>({
     env: 'UPLOAD_DIRECTORY',
     default: null
   },
+  JWT_SECRET: {
+    doc: 'Secret for sign JWT',
+    format: String,
+    env: 'JWT_SECRET',
+    default: null
+  }
 });

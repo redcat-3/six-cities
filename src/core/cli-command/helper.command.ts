@@ -10,10 +10,10 @@ export default class HelpCommand implements CliCommandInterface {
     main.js --<command> [--arguments]
     `));
     console.log(chalk.yellow(`Команды:
-    --version:                   # выводит номер версии
+    --version:                   # выводит номер версии приложения
     --help:                      # печатает этот текст
-    --import <path>:             # импортирует данные из TSV
-    --generate <n> <path> <url>  # генерирует произвольное количество тестовых данных
+    --import <path>:             # импортирует данные из TSV файла, генерируемого командой --generate
+    --generate <n> <path> <url>  # генерирует <n> тестовых данных в формате TSV, используемые командой --import
 `));
   }
 }

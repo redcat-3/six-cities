@@ -12,13 +12,16 @@ import CreateOfferDto from './dto/create-offer.dto.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import OfferIndexRdo from './rdo/offer-index.rdo.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import { UserServiceInterface } from '../user/user-service.interface.js';
 import CommentRdo from '../comment/rdo/comment.rdo.js';
 import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../core/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../core/middlewares/document-exists.middleware.js';
+import { UnknownRecord } from '../../types/unknown-record.type.js';
 
 type ParamsGetOffer = {
   offerId: string;
+  city: string;
 }
 
 @injectable()
@@ -26,7 +29,8 @@ export default class OfferController extends Controller {
   constructor(
     @inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
     @inject(AppComponent.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
-    @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface
+    @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
+    @inject(AppComponent.UserServiceInterface) private readonly userService: UserServiceInterface
   ) {
     super(logger);
     this.logger.info('Register routes for OfferController…');
@@ -36,10 +40,12 @@ export default class OfferController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
+      middlewares: [
+        new ValidateDtoMiddleware(CreateOfferDto)
+      ]
     });
     this.addRoute({
-      path: '/:offerId',
+      path: '/favorite/premium/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
       middlewares: [
@@ -66,18 +72,23 @@ export default class OfferController extends Controller {
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
-    this.addRoute({ path: '/premium', method: HttpMethod.Get, handler: this.indexPremiumOffers });
-    this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.indexFavoriteOffers });
+    this.addRoute({
+      path: '/favorite/premium/:city',
+      method: HttpMethod.Get,
+      handler: this.indexPremiumOffers,
+    });
     this.addRoute({
       path: '/favorite/:offerId',
       method: HttpMethod.Patch,
       handler: this.changeFavorite,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId')
+      ]
     });
     this.addRoute({
       path: '/:offerId/comments',
       method: HttpMethod.Get,
-      handler: this.getComments,
+      handler: this.showComments,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
@@ -86,11 +97,10 @@ export default class OfferController extends Controller {
   }
 
   public async show(
-    {params}: Request<core.ParamsDictionary | ParamsGetOffer>,
+    { params }: Request<core.ParamsDictionary | ParamsGetOffer>,
     res: Response
   ): Promise<void> {
-    const {offerId} = params;
-    const offer = await this.offerService.findById(offerId);
+    const offer = await this.offerService.findById(params.offerId);
 
     this.ok(res, fillDTO(OfferRdo, offer));
   }
@@ -101,15 +111,15 @@ export default class OfferController extends Controller {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
+    { body, user }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({ ...body, userId: user.id });
     this.created(res, fillDTO(OfferRdo, result));
   }
 
   public async delete(
-    {params}: Request<core.ParamsDictionary | ParamsGetOffer>,
+    { params }: Request<core.ParamsDictionary | ParamsGetOffer>,
     res: Response
   ): Promise<void> {
     const {offerId} = params;
@@ -121,7 +131,7 @@ export default class OfferController extends Controller {
   }
 
   public async update(
-    {body, params}: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>, UpdateOfferDto>,
+    { body, params }: Request<core.ParamsDictionary | ParamsGetOffer, UnknownRecord, UpdateOfferDto>,
     res: Response
   ): Promise<void> {
     const updatedOffer = await this.offerService.updateById(params.offerId, body);
@@ -129,27 +139,26 @@ export default class OfferController extends Controller {
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
-  public async indexPremiumOffers(_req: Request, res: Response):Promise<void> {
-    const offers = await this.offerService.findPremiumOffers();
-    this.ok(res, fillDTO(OfferIndexRdo, offers));
-  }
-
-  public async indexFavoriteOffers(_req: Request, res: Response):Promise<void> {
-    const offers = await this.offerService.findFavoriteOffers();
+  public async indexPremiumOffers(
+    { params }: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response): Promise<void> {
+    const offers = await this.offerService.findPremiumOffers(params.city);
     this.ok(res, fillDTO(OfferIndexRdo, offers));
   }
 
   public async changeFavorite(
-    {params}: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>, UpdateOfferDto>,
+    { params, user }: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>>,
     res: Response
   ): Promise<void> {
-    const updatedOffer = await this.offerService.changeFavorite(params.offerId);
-
+    const result = await this.userService.changeFavorite(params.offerId, user.id);
+    const updatedOffer = await this.offerService.findById(params.offerId);
+    if(updatedOffer) {
+      updatedOffer.setIsFavorite(result);
+    }
     this.ok(res, fillDTO(OfferRdo, updatedOffer));
   }
 
-  public async getComments(
-    {params}: Request<core.ParamsDictionary | ParamsGetOffer, object, object>,
+  public async showComments(
+    { params }: Request<core.ParamsDictionary | ParamsGetOffer, object, object>,
     res: Response
   ): Promise<void> {
 

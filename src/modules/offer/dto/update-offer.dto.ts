@@ -1,18 +1,18 @@
-import {OfferType} from '../../../types/offer-type.enum.js';
-import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional } from 'class-validator';
-import {MIN_LENGHT, Title, Description, RoomsNumber, AdultsNumber, Price, Latitude, Longitude } from '../offer.constant.js';
-import { City } from '../../../types/city.enum.js';
+import {RentType} from '../../../types/rent-type.enum.js';
+import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional, IsNotEmpty, IsUrl, ValidateNested, ArrayMinSize, IsLatitude, IsLongitude } from 'class-validator';
+import { MIN_TITLE_LENGHT, MAX_TITLE_LENGHT, MIN_DESC_LENGHT, MAX_DESC_LENGHT, COUNT_OF_IMAGES, MIN_ROOMS_NUMBER, MAX_ROOMS_NUMBER, MIN_GEST_NUMBER, MAX_GEST_NUMBER, MAX_PRICE, MIN_PRICE } from '../offer.constant.js';
+import { CityNames } from '../../../types/city-names.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
 export default class UpdateOfferDto {
   @IsOptional()
-  @MinLength(Title.Min, {message: 'Minimum title length must be $Title.Min'})
-  @MaxLength(Title.Max, {message: 'Maximum title length must be $Title.Max'})
+  @MinLength(MIN_TITLE_LENGHT, {message: `Minimum title length must be ${MIN_TITLE_LENGHT}`})
+  @MaxLength(MAX_TITLE_LENGHT, {message: `Maximum title length must be ${MAX_TITLE_LENGHT}`})
   public title!: string;
 
   @IsOptional()
-  @MinLength(Description.Min, {message: 'Minimum title length must be $Description.Min'})
-  @MaxLength(Description.Max, {message: 'Maximum title length must be $Description.Max'})
+  @MinLength(MIN_DESC_LENGHT, {message: `Minimum title length must be ${MIN_DESC_LENGHT}`})
+  @MaxLength(MAX_DESC_LENGHT, {message: `Maximum title length must be ${MAX_DESC_LENGHT}`})
   public description!: string;
 
   @IsOptional()
@@ -20,16 +20,18 @@ export default class UpdateOfferDto {
   public postDate!: Date;
 
   @IsOptional()
-  @IsEnum(City, {message: 'type must be Paris, or Cologne, or Brussels, or Amsterdam, or Hamburg, or Dusseldorf'})
+  @IsEnum(CityNames, {message: `type must be  ${Object.values(RentType)}`})
   public city!:	string;
 
   @IsOptional()
-  @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
+  @IsNotEmpty({message: 'Preview image is required'})
+  @IsUrl()
   public previewImage!: string;
 
   @IsOptional()
-  @IsArray({message: 'Field images must be an array'})
-  @MaxLength(MIN_LENGHT, {message: 'Too short for field «image»'})
+  @ValidateNested({ each: true })
+  @ArrayMinSize(COUNT_OF_IMAGES, {message: `Count of image must be ${COUNT_OF_IMAGES}`})
+  @IsUrl()
   public images!: string[];
 
   @IsOptional()
@@ -37,56 +39,46 @@ export default class UpdateOfferDto {
   public isPremium!: boolean;
 
   @IsOptional()
-  @IsBoolean({message: 'Field isFavorite must be boolean'})
-  public isFavorite!: boolean;
-
-  @IsOptional()
-  @IsEnum(OfferType, {message: 'type must be &OfferType'})
-  public type!: OfferType;
+  @IsEnum(RentType, {message: `type must be ${Object.values(RentType)}`})
+  public type!: RentType;
 
   @IsOptional()
   @IsInt({message: 'BedroomsNumber must be an integer'})
-  @Min(RoomsNumber.Min, {message: 'Minimum bedroomsNumber is $RoomsNumber.Min'})
-  @Max(RoomsNumber.Max, {message: 'Maximum bedroomsNumber is $RoomsNumber.Max'})
-  public bedroomsNumber!: number;
+  @Min(MIN_ROOMS_NUMBER, {message: `Minimum roomsNumber is ${MIN_ROOMS_NUMBER}`})
+  @Max(MAX_ROOMS_NUMBER, {message: `Maximum roomsNumber is ${MAX_ROOMS_NUMBER}`})
+  public roomsNumber!: number;
 
   @IsOptional()
-  @IsInt({message: 'MaxAdultsNumber must be an integer'})
-  @Min(AdultsNumber.Min, {message: 'Minimum bedroomsNumber is $AdultsNumber.Min'})
-  @Max(AdultsNumber.Max, {message: 'Maximum bedroomsNumber is $AdultsNumber.Max'})
-  public maxAdultsNumber!: number;
+  @IsInt({message: 'GestNumber must be an integer'})
+  @Min(MIN_GEST_NUMBER, {message: `Minimum gestNumber is  ${MIN_GEST_NUMBER}`})
+  @Max(MAX_GEST_NUMBER, {message: `Maximum gestNumber is ${MAX_GEST_NUMBER}`})
+  public gestNumber!: number;
 
   @IsOptional()
   @IsInt({message: 'Price must be an integer'})
-  @Min(Price.Min, {message: 'Minimum price is $Price.Min'})
-  @Max(Price.Max, {message: 'Maximum price is $Price.Max'})
+  @Min(MIN_PRICE, {message: `Minimum price is ${MIN_PRICE}`})
+  @Max(MAX_PRICE, {message: `Maximum price is ${MAX_PRICE}`})
   public price!: number;
 
   @IsOptional()
   @IsArray({message: 'Field features must be an array'})
-  @IsEnum({each: FeatureType, message: 'Features field must be an array of valid values'})
+  @IsEnum(FeatureType, { each: true, message: `Features values must be in ${Object.values(FeatureType)}` })
   public features!: string[];
 
   @IsOptional()
   @IsMongoId({message: 'hostId field must be valid an id'})
-  public hostId!: string;
+  public userId!: string;
 
   @IsOptional()
   @IsInt({message: 'Comment count must be an integer'})
   public commentCount!: number;
-  // public static async findBySpecies(this: ReturnModelType<typeof OfferEntity>, commentCount: number) {
-  //   return this.getCommentsCount({ commentCount }).exec();
-  // }
 
   @IsOptional()
-  @IsInt({message: 'Latitude count must be an integer'})
-  @Min(Latitude.Min, {message: 'Minimum rating is $Latitude.Min'})
-  @Max(Latitude.Max, {message: 'Maximum rating is $Latitude.Max'})
+  @IsLatitude({message: 'Latitude count must be a valid latitude coordinate'})
   public latitude!: number;
 
   @IsOptional()
   @IsInt({message: 'Longitude count must be an integer'})
-  @Min(Longitude.Min, {message: 'Minimum rating is $Longitude.Min'})
-  @Max(Longitude.Max, {message: 'Maximum rating is $Longitude.Max'})
+  @IsLongitude({message: 'Longitude count must be a valid longitude coordinate'})
   public longitude!: number;
 }

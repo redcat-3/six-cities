@@ -1,0 +1,66 @@
+# Объявления
+## Объявление по идентификатору
+
+GET http://localhost:4000/offers/favorite/premium/64882026088e008f213d3e67 HTTP/1.1
+
+###
+
+## Список объявлений
+
+GET http://localhost:4000/offers HTTP/1.1
+
+###
+
+## Создание объявления
+POST http://localhost:4000/offers HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4NzE4Mzg4NSwiZXhwIjoxNjg3MzU2Njg1fQ.8b_enCJmspjxSnNw231pH8i6yI3Ea1jl6P3pWN6VoYs
+Content-Type: application/json
+
+{
+  "title": "Sweet home apartment",
+  "description": "A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.",
+  "city":	"Amsterdam",
+  "previewImage": "billy-summers.png",
+  "images": ["billy-summersgtg.png"],
+  "isPremium": false,
+  "type": "apartment",
+  "bedroomsNumber": 2,
+  "maxAdultsNumber": 2,
+  "price": 2500,
+  "features": ["Washer", "Fridge"],
+  "hostId": "6485f358299152496b800a62",
+  "latitude": 50.9922,
+  "longitude": 4.0014
+}
+
+###
+
+## Удаление объявления
+DELETE http://localhost:4000/offers/648ef3159fcfb7929ef123ea HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0ODVmMzU4Mjk5MTUyNDk2YjgwMGE2MiIsImlhdCI6MTY4NzE3ODMzMCwiZXhwIjoxNjg3MzUxMTMwfQ.LnFUzcTV5RFQBx1EwHUT9xKREjQJCVvgfHwErKW3PGE
+###
+
+## Обновление объявления
+PATCH http://localhost:4000/offers/649062b38fa4b2eede2eda57 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4NzE4Mzg4NSwiZXhwIjoxNjg3MzU2Njg1fQ.8b_enCJmspjxSnNw231pH8i6yI3Ea1jl6P3pWN6VoYs
+Content-Type: application/json
+
+{
+  "title": "Ночной дозор 3",
+  "description": "Проверка обновления, Проверка обновления",
+  "price": 1100
+}
+
+###
+
+## Список премиальных объявлений по аренде
+GET http://localhost:4000/offers/favorite/premium HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0ODVmMzU4Mjk5MTUyNDk2YjgwMGE2MiIsImlhdCI6MTY4NzE3ODMzMCwiZXhwIjoxNjg3MzUxMTMwfQ.LnFUzcTV5RFQBx1EwHUT9xKREjQJCVvgfHwErKW3PGE
+###
+
+## Изменение статуса "избранное" у объявления
+PATCH http://localhost:4000/offers/favorite/649062b38fa4b2eede2eda57 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4NzI3NTYwNCwiZXhwIjoxNjg3NDQ4NDA0fQ.qDjykWAQGFWQGuICP7jXrc2hzHQGg7-DBw01ZAnxWt0
+
+###

@@ -1,17 +1,15 @@
 
 import { CliCommandInterface } from '../core/cli-command/cli-command.interface';
 
-type ParsedCommand = {
-  [key: string]: string[]
-}
+type ParsedCommand = Record<string, string[]>
 
 export default class CLIApplication {
-  private commands: {[propertyName: string]: CliCommandInterface} = {};
-  private defaultCommand = '--help';
+  private commands: Record<string, CliCommandInterface> = {};
+  private readonly defaultCommand = '--help';
 
   private parseCommand(cliArguments: string[]): ParsedCommand {
     const parsedCommand: ParsedCommand = {};
-    let command = '';
+    let command: string;
 
     return cliArguments.reduce((acc, item) => {
       if (item.startsWith('--')) {

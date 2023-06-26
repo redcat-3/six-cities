@@ -17,7 +17,7 @@ export default class OfferIndexRdo {
   public isPremium!: boolean;
 
   @Expose()
-  public isFavorite!: boolean;
+  public isFavorite!: false;
 
   @Expose()
   public rating!: number;

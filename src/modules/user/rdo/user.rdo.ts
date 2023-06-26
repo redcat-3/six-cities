@@ -11,5 +11,5 @@ export default class UserRdo {
   public name!: string;
 
   @Expose()
-  public isPro!: string;
+  public isPro!: boolean;
 }

@@ -8,6 +8,7 @@ import { OfferServiceInterface } from './offer-service.interface.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import { DEFAULT_OFFER_COUNT, DEFAULT_PREMIUM_COUNT } from './offer.constant.js';
+import { Types } from 'mongoose';
 
 @injectable()
 export default class OfferService implements OfferServiceInterface {
@@ -19,56 +20,13 @@ export default class OfferService implements OfferServiceInterface {
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
     const result = await this.offerModel.create(dto);
     this.logger.info(`New offer created: ${dto.title}`);
-
     return result;
   }
 
-  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $match: { $expr: { $in: ['$offerId', '$comments'] } } },
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'},
-          rating: { $avg: '$comments'}}
-      },
-      { $unset: 'comments' },
-    ]);
-
+  public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findById(offerId)
-      .populate(['hostId'])
-      .exec();
-  }
-
-  public async find(): Promise<DocumentType<OfferEntity>[]>{
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'} }
-      },
-      { $unset: 'comments' },
-    ]);
-
-    return this.offerModel
-      .find()
-      .sort({createdAt: SortType.Down})
-      .populate(['hostId'])
+      .findByIdAndUpdate(offerId, dto, {new: true})
+      .populate(['userId'])
       .exec();
   }
 
@@ -78,10 +36,83 @@ export default class OfferService implements OfferServiceInterface {
       .exec();
   }
 
-  public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
+  public async findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null> {
+    this.offerModel.aggregate([
+      { $match: { $expr: { $eq: [offerId, { $toString: '$_id'}] } } },
+      {
+        $lookup: {
+          from: 'users',
+          pipeline: [
+            { $match: { $expr: {$eq: [userId, { $toString: '$_id'}] } } },
+            { $project: {_id: false, favorites: true}}
+          ],
+          as: 'user'
+        }
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      { $addFields: {
+        isFavorite: {
+          $cond:
+            [
+              {$and:
+                [
+                  {$ne: [{ $type: '$user.favorites'}, 'missing']},
+                  {$in: ['$_id', '$user.favorites']}
+                ]
+              },
+              true,
+              false
+            ]
+        }
+      }
+      },
+      { $unset: 'comments' },
+    ]);
     return this.offerModel
-      .findByIdAndUpdate(offerId, dto, {new: true})
-      .populate(['hostId'])
+      .findOne({offerId})
+      .populate(['userId'])
+      .exec();
+  }
+
+  public async find(userId?: string, count?: number): Promise<DocumentType<OfferEntity>[]>{
+    const limit = count ?? DEFAULT_OFFER_COUNT;
+    const query = userId ? {users: userId} : {};
+
+    this.offerModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          pipeline: [
+            { $match: { $expr: {$eq: [userId, { $toString: '$_id'}] } } },
+            { $project: {_id: false, favorites: true}}
+          ],
+          as: 'user'
+        }
+      },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      { $addFields: {
+        isFavorite: {
+          $cond:
+            [
+              {$and:
+                [
+                  {$ne: [{ $type: '$user.favorites'}, 'missing']},
+                  {$in: ['$_id', '$user.favorites']}
+                ]
+              },
+              true,
+              false
+            ]
+        }
+      }
+      },
+      { $unset: 'users' },
+    ]).exec();
+
+    return this.offerModel
+      .find(query, {}, {limit})
+      .sort({createdAt: SortType.Down})
+      .populate(['userId'])
       .exec();
   }
 
@@ -90,112 +121,39 @@ export default class OfferService implements OfferServiceInterface {
       .exists({_id: documentId})) !== null;
   }
 
-  public async findByUserId(userId: string, count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? DEFAULT_OFFER_COUNT;
-    return this.offerModel
-      .find({users: userId}, {}, {limit})
-      .populate(['userId'])
-      .exec();
-  }
-
-  public async findPremiumOffers(): Promise<DocumentType<OfferEntity>[]> {
-    const limit = DEFAULT_PREMIUM_COUNT;
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'} }
-      },
-      { $unset: 'comments' },
-    ]);
+  public async findPremiumOffers(city: string, count?: number): Promise<DocumentType<OfferEntity>[]> {
+    const limit = count ? count : DEFAULT_PREMIUM_COUNT;
 
     return this.offerModel
-      .find({isPremium: true}, {}, {limit})
+      .find({isPremium: true, city: city}, {}, {limit})
       .sort({createdAt: SortType.Down})
       .populate(['userId'])
       .exec();
   }
 
-  public async findFavoriteOffers(): Promise<DocumentType<OfferEntity>[]> {
-    const limit = DEFAULT_OFFER_COUNT;
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
-        },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'} }
-      },
-      { $unset: 'comments' },
-    ]);
-
-    return this.offerModel
-      .find({isFavorite: true}, {}, {limit})
+  public async findFavorite(favoriteList:string[]):Promise<DocumentType<OfferEntity>[]| null>{
+    const ids = favoriteList.map((item)=>new Types.ObjectId(item));
+    return await this.offerModel
+      .find({_id:{$in: ids }})
       .sort({createdAt: SortType.Down})
-      .populate(['userId'])
+      .populate(['userId', 'locationId'])
       .exec();
   }
 
-  public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    this.offerModel.aggregate([
-      {
-        $lookup: {
-          from: 'comments',
-          pipeline: [
-            { $project: { _id: 1}}
-          ],
-          as: 'comments'
+
+  public async addComment(offerId: string, newRating: number): Promise<DocumentType<OfferEntity> | null> {
+    const currentOffer = await this.offerModel.findById(offerId);
+    if (!currentOffer) {
+      return null;
+    }
+    return this.offerModel
+      .findByIdAndUpdate(
+        offerId,
+        {
+          '$inc': { commentCount: 1 },
+          '$set': { rating: ((currentOffer.rating + newRating) / (currentOffer.commentCount + 1)).toFixed(1)}
         },
-      },
-      { $addFields:
-        { commentCount: { $size: '$comments'} }
-      },
-      { $unset: 'comments' },
-    ]);
-
-    return this.offerModel
-      .findById(offerId)
-      .aggregate([
-        { $set: { '$isFavorite': '$!isFavorite' } }
-      ])
-      .populate(['userId'])
-      .exec();
-  }
-
-  public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel
-      .findByIdAndUpdate(offerId, {'$inc': {
-        commentCount: 1,
-      }}).exec();
-  }
-
-  public async findNew(count: number): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
-      .find()
-      .sort({createdAt: SortType.Down})
-      .limit(count)
-      .populate(['hostId'])
-      .exec();
-  }
-
-  public async findDiscussed(count: number): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
-      .find()
-      .sort({commentCount: SortType.Down})
-      .limit(count)
-      .populate(['hostId'])
+        {new: true})
       .exec();
   }
 }
