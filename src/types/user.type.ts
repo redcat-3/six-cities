@@ -1,6 +1,8 @@
+import { UserType } from './user-type.enum';
+
 export type User = {
   email: string;
-  avatarPath?: string | undefined;
+  avatarPath?: string;
   name: string;
-  isPro: boolean;
+  isPro: UserType;
 }

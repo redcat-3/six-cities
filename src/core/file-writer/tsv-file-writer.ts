@@ -1,3 +1,4 @@
+import EventEmitter from 'node:events';
 import { FileWriterInterface } from './file-writer.interface.js';
 import { WriteStream } from 'node:fs';
 import { createWriteStream } from 'node:fs';
@@ -18,10 +19,7 @@ export default class TSVFileWriter implements FileWriterInterface {
 
   public async write(row: string): Promise<void> {
     if (!this.stream.write(`${row}\n`)) {
-      return new Promise((resolve) => {
-        this.stream.once('drain', () => resolve());
-      });
+      await EventEmitter.once(this.stream, 'drain');
     }
-    return Promise.resolve();
   }
 }

@@ -21,12 +21,8 @@ import { UnknownRecord } from '../../types/unknown-record.type.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
 import OfferIndexRdo from '../offer/rdo/offer-index.rdo.js';
-import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
+//import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
 import { OfferServiceInterface } from '../offer/offer-service.interface.js';
-
-// type ParamsGetUser = {
-//   userId: string;
-// }
 
 @injectable()
 export default class UserController extends Controller {
@@ -69,15 +65,14 @@ export default class UserController extends Controller {
       path: '/favorite',
       method: HttpMethod.Get,
       handler: this.indexFavoriteOffers,
-      middlewares: [new PrivateRouteMiddleware()]
+      //middlewares: [new PrivateRouteMiddleware()]
     });
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
+    { body }: Request<UnknownRecord, UnknownRecord, CreateUserDto>,
     res: Response,
   ): Promise <void> {
-    console.log({body});
     const user = await this
       .userService
       .verifyUser(body, this.configService.get('SALT'));
@@ -107,7 +102,7 @@ export default class UserController extends Controller {
 
     if (! user) {
       throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
+        StatusCodes.BAD_REQUEST,
         'Unauthorized',
         'UserController'
       );
@@ -157,7 +152,7 @@ export default class UserController extends Controller {
         'UserController'
       );
     }
-    const favoriteOffers = foundedUser.getFavoriteOffers;
+    const favoriteOffers = foundedUser.getFavoriteOffers();
     if(! favoriteOffers || favoriteOffers.length === 0) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
@@ -165,7 +160,7 @@ export default class UserController extends Controller {
         'UserController'
       );
     }
-    const offers = await this.offerService.findMany(favoriteOffers);
+    const offers = await this.offerService.findFavorite(favoriteOffers);
     this.ok(res, fillDTO(OfferIndexRdo, offers));
   }
 }

@@ -36,10 +36,10 @@ export default class OfferRdo {
   public type!: string;
 
   @Expose()
-  public bedroomsNumber!: number;
+  public roomsNumber!: number;
 
   @Expose()
-  public maxAdultsNumber!: number;
+  public gestNumber!: number;
 
   @Expose()
   public price!: number;
@@ -47,7 +47,7 @@ export default class OfferRdo {
   @Expose()
   public features!: string;
 
-  @Expose({ name: 'host'})
+  @Expose({ name: 'user'})
   @Type(() => UserRdo)
   public user!: UserRdo;
 

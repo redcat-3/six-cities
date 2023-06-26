@@ -1,3 +1,4 @@
+import { FeatureType } from '../../types/feature-type.enum.js';
 import { Offer } from '../../types/offer.type.js';
 
 export function createOffer(offerData: string): Offer {
@@ -11,8 +12,8 @@ export function createOffer(offerData: string): Offer {
     isPremium,
     rating,
     type,
-    bedroomsNumber,
-    maxAdultsNumber,
+    roomsNumber,
+    gestNumber,
     price,
     features,
     email,
@@ -20,25 +21,25 @@ export function createOffer(offerData: string): Offer {
     name,
     isPro,
     latitude,
-    longitude
+    longitude,
   ] = offerData.replace('\n', '').split('\t');
 
   return {
     title,
     description,
-    postDate: new Date(createdDate),
+    postDate: new Date(createdDate).toISOString,
     city,
     previewImage,
     images: images.split(';'),
     isPremium: Boolean(isPremium),
-    rating: Number.parseInt(rating, 10),
+    rating: Number.parseFloat(rating),
     type,
-    bedroomsNumber: Number.parseInt(bedroomsNumber, 10),
-    maxAdultsNumber: Number.parseInt(maxAdultsNumber, 10),
-    price: Number.parseInt(price, 10),
-    features: features.split(';'),
-    host: {email, avatarPath, name, isPro: Boolean(isPro)},
+    roomsNumber: Number.parseInt(roomsNumber, 10),
+    gestNumber: Number.parseInt(gestNumber, 10),
+    price: Number.parseFloat(price),
+    features: features.split(';') as unknown as FeatureType[],
+    user: { email, avatarPath, name, isPro },
     latitude: Number.parseInt(latitude, 10),
     longitude: Number.parseInt(longitude, 10)
-  } as Offer;
+  } as unknown as Offer;
 }

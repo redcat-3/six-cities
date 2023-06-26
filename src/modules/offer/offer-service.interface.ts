@@ -5,12 +5,12 @@ import UpdateOfferDto from './dto/update-offer.dto.js';
 
 export interface OfferServiceInterface {
   create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
-  findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  find(): Promise<DocumentType<OfferEntity>[]>;
-  findMany(offerIds:() => string[]): Promise<DocumentType<OfferEntity>[]>
-  deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null>;
+  deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  find(userId?: string, count?: number): Promise<DocumentType<OfferEntity>[]>;
+  findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null>
+  findPremiumOffers(city: string, count?: number): Promise<DocumentType<OfferEntity>[]>;
+  findFavorite(favoriteList:string[]):Promise<DocumentType<OfferEntity>[]| null>;
   addComment(offerId: string, newRating: number): Promise<DocumentType<OfferEntity> | null>;
   exists(documentId: string): Promise<boolean>;
-  findPremiumOffers(): Promise<DocumentType<OfferEntity>[]>;
 }

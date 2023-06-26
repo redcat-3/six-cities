@@ -7,17 +7,20 @@ import { LoggerInterface } from '../logger/logger.interface.js';
 import ConsoleLoggerService from '../logger/console.service.js';
 import OfferService from '../../modules/offer/offer.service.js';
 import UserService from '../../modules/user/user.service.js';
-import MongoClientService from '../database-client/mongo-client.service.js';
 import { Offer } from '../../types/offer.type.js';
 import { UserModel } from '../../modules/user/user.entity.js';
 import { OfferModel } from '../../modules/offer/offer.entity.js';
 import { DatabaseClientInterface } from '../database-client/database-client.interface.js';
+import { ConfigInterface } from '../config/config.interface.js';
+import { RestSchema } from '../config/rest.schema.js';
+import ConfigService from '../config/config.service.js';
+import MongoClientService from '../database-client/mongo-client.service.js';
 
-const DEFAULT_DB_PORT = '27017';
 const DEFAULT_USER_PASSWORD = '123456';
 
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
+  private config: ConfigInterface<RestSchema>;
   private userService!: UserServiceInterface;
   private offerService!: OfferServiceInterface;
   private databaseService!: DatabaseClientInterface;
@@ -31,17 +34,19 @@ export default class ImportCommand implements CliCommandInterface {
     this.logger = new ConsoleLoggerService();
     this.offerService = new OfferService(this.logger, OfferModel);
     this.userService = new UserService(this.logger, UserModel);
+    this.config = new ConfigService(this.logger);
     this.databaseService = new MongoClientService(this.logger);
   }
 
   private async saveOffer(offer: Offer) {
     const user = await this.userService.findOrCreate({
-      ...offer.host,
+      ...offer.user,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
+
     await this.offerService.create({
       ...offer,
-      hostId: user.id,
+      userId: user.id,
     });
   }
 
@@ -56,20 +61,31 @@ export default class ImportCommand implements CliCommandInterface {
     this.databaseService.disconnect();
   }
 
-  public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
-    const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
+  public async execute(filename: string, salt: string): Promise<void> {
+    const mongoUri = getMongoURI(
+      this.config.get('DB_USER'),
+      this.config.get('DB_PASSWORD'),
+      this.config.get('DB_HOST'),
+      this.config.get('DB_PORT'),
+      this.config.get('DB_NAME'),
+    );
     this.salt = salt;
 
-    await this.databaseService.connect(uri);
+    if(filename === undefined) {
+      console.log('Filename is undefined');
+    }
+
+    await this.databaseService.connect(mongoUri);
+    this.logger.info('Init database completed');
     const fileReader = new TSVFileReader(filename.trim());
 
     fileReader.on('line', this.onLine);
     fileReader.on('end', this.onComplete);
 
-    try {
-      await fileReader.read();
-    } catch(err) {
-      console.log(`Can't read the file: ${getErrorMessage(err)}`);
-    }
+    await fileReader
+      .read()
+      .catch((error) => {
+        console.log(`Can't read file: ${getErrorMessage(error)}`);
+      });
   }
 }
