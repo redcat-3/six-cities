@@ -54,7 +54,6 @@
     "dotenv": "16.0.3",
     "express": "4.18.2",
     "express-async-handler": "1.2.0",
-    "express-query-booleanizer": "0.0.16",
     "got": "12.6.0",
     "http-status-codes": "2.2.0",
     "inversify": "6.0.1",

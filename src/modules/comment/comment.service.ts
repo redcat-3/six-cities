@@ -6,14 +6,12 @@ import CreateCommentDto from './dto/create-comment.dto.js';
 import { CommentEntity } from './comment.entity.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import { SortType } from '../../types/sort-type.enum.js';
-//import { OfferEntity } from '../offer/offer.entity.js';
 
 @injectable()
 export default class CommentService implements CommentServiceInterface {
   constructor(
     @inject(AppComponent.LoggerInterface) private readonly logger: LoggerInterface,
     @inject(AppComponent.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>,
-    //@inject(AppComponent.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
   ) {}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {

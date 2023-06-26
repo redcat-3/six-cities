@@ -21,7 +21,7 @@ export function createOffer(offerData: string): Offer {
     name,
     isPro,
     latitude,
-    longitude
+    longitude,
   ] = offerData.replace('\n', '').split('\t');
 
   return {

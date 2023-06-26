@@ -7,7 +7,6 @@ import { LoggerInterface } from '../logger/logger.interface.js';
 import ConsoleLoggerService from '../logger/console.service.js';
 import OfferService from '../../modules/offer/offer.service.js';
 import UserService from '../../modules/user/user.service.js';
-import MongoClientService from '../database-client/mongo-client.service.js';
 import { Offer } from '../../types/offer.type.js';
 import { UserModel } from '../../modules/user/user.entity.js';
 import { OfferModel } from '../../modules/offer/offer.entity.js';
@@ -15,6 +14,9 @@ import { DatabaseClientInterface } from '../database-client/database-client.inte
 import { ConfigInterface } from '../config/config.interface.js';
 import { RestSchema } from '../config/rest.schema.js';
 import ConfigService from '../config/config.service.js';
+import MongoClientService from '../database-client/mongo-client.service.js';
+
+const DEFAULT_USER_PASSWORD = '123456';
 
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
@@ -32,15 +34,16 @@ export default class ImportCommand implements CliCommandInterface {
     this.logger = new ConsoleLoggerService();
     this.offerService = new OfferService(this.logger, OfferModel);
     this.userService = new UserService(this.logger, UserModel);
-    this.databaseService = new MongoClientService(this.logger);
     this.config = new ConfigService(this.logger);
+    this.databaseService = new MongoClientService(this.logger);
   }
 
   private async saveOffer(offer: Offer) {
     const user = await this.userService.findOrCreate({
       ...offer.user,
-      password: this.config.get('DB_PASSWORD')
+      password: DEFAULT_USER_PASSWORD
     }, this.salt);
+
     await this.offerService.create({
       ...offer,
       userId: user.id,
@@ -58,15 +61,22 @@ export default class ImportCommand implements CliCommandInterface {
     this.databaseService.disconnect();
   }
 
-  public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
-    const uri = getMongoURI(login, password, host, this.config.get('DB_PORT'), dbname);
+  public async execute(filename: string, salt: string): Promise<void> {
+    const mongoUri = getMongoURI(
+      this.config.get('DB_USER'),
+      this.config.get('DB_PASSWORD'),
+      this.config.get('DB_HOST'),
+      this.config.get('DB_PORT'),
+      this.config.get('DB_NAME'),
+    );
     this.salt = salt;
 
     if(filename === undefined) {
       console.log('Filename is undefined');
     }
 
-    await this.databaseService.connect(uri);
+    await this.databaseService.connect(mongoUri);
+    this.logger.info('Init database completed');
     const fileReader = new TSVFileReader(filename.trim());
 
     fileReader.on('line', this.onLine);

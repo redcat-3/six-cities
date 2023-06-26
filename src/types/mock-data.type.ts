@@ -3,6 +3,7 @@ export type MockData = {
   descriptions: string[];
   postDates: string[];
   cities: string[];
+  emails: string[];
   previewImages: string[];
   images: string[];
   types: string[];

@@ -1,5 +1,11 @@
-export function generateRandomValue(min:number, max: number, numAfterDigit: number) {
-  return +((Math.random() * (max - min)) + min).toFixed(numAfterDigit);
+export function generateRandomValue(min:number, max: number, numAfterDigit: number | typeof NaN) {
+  if ((!Number.isFinite(min) || !Number.isFinite(max)) || (min < 0 || max < 0)) {
+    return NaN;
+  }
+
+  const lowerBound = Math.min(min, max);
+  const upperBound = Math.max(min, max);
+  return +(Math.random() * (upperBound - lowerBound) + lowerBound).toFixed(numAfterDigit);
 }
 
 export function getRandomItems<T>(items: T[]):T[] {

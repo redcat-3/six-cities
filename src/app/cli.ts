@@ -9,7 +9,7 @@ export default class CLIApplication {
 
   private parseCommand(cliArguments: string[]): ParsedCommand {
     const parsedCommand: ParsedCommand = {};
-    let command = '';
+    let command: string;
 
     return cliArguments.reduce((acc, item) => {
       if (item.startsWith('--')) {

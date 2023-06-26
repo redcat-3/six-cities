@@ -21,12 +21,8 @@ import { UnknownRecord } from '../../types/unknown-record.type.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
 import OfferIndexRdo from '../offer/rdo/offer-index.rdo.js';
-import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
+//import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
 import { OfferServiceInterface } from '../offer/offer-service.interface.js';
-
-// type ParamsGetUser = {
-//   userId: string;
-// }
 
 @injectable()
 export default class UserController extends Controller {
@@ -69,7 +65,7 @@ export default class UserController extends Controller {
       path: '/favorite',
       method: HttpMethod.Get,
       handler: this.indexFavoriteOffers,
-      middlewares: [new PrivateRouteMiddleware()]
+      //middlewares: [new PrivateRouteMiddleware()]
     });
   }
 
