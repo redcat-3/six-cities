@@ -1,8 +1,9 @@
 import { User } from '../../types/user.type.js';
-import typegoose, { defaultClasses, getModelForClass } from '@typegoose/typegoose';
+import typegoose, { Ref, defaultClasses } from '@typegoose/typegoose';
 import { createSHA256 } from '../../core/helpers/common.js';
 import { DEFAULT_USER_AVATAR } from './user.constant.js';
 import { UserType } from '../../types/user-type.enum.js';
+import { OfferEntity } from '../offer/offer.entity.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -34,10 +35,13 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   private password?: string;
 
   @prop({
-    required: false,
-    default: []
+    required: true,
+    ref: () => OfferEntity,
+    _id: false,
+    default: [],
+    type: () => [OfferEntity]
   })
-  public favoriteOffers!: string[];
+  public favoriteOffers!: Ref<OfferEntity>[];
 
   constructor(userData: User) {
     super();
@@ -45,7 +49,6 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     this.avatarPath = userData.avatarPath || DEFAULT_USER_AVATAR;
     this.name = userData.name;
     this.isPro = userData.isPro;
-    this.favoriteOffers = [];
   }
 
   public setPassword(password: string, salt: string) {
@@ -60,23 +63,5 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     const hashPassword = createSHA256(password, salt);
     return hashPassword === this.password;
   }
-
-  public isFavoriteOffers(offerId: string) {
-    return this.favoriteOffers.includes(offerId);
-  }
-
-  public getFavoriteOffers() {
-    return this.favoriteOffers;
-  }
-
-  public deleteFavoriteOffers(offerId: string) {
-    const index = this.favoriteOffers.findIndex((x) => x === offerId);
-    this.favoriteOffers.splice(index, 1);
-    return this.favoriteOffers;
-  }
-
-  public addFavoriteOffers(offerId: string) {
-    return this.favoriteOffers.push(offerId);
-  }
 }
-export const UserModel = getModelForClass(UserEntity);
+//export const UserModel = getModelForClass(UserEntity);

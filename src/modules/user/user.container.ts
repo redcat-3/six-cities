@@ -3,7 +3,8 @@ import { types } from '@typegoose/typegoose';
 import { UserServiceInterface } from './user-service.interface.js';
 import { AppComponent } from '../../types/app-component.enum.js';
 import UserService from './user.service.js';
-import { UserEntity, UserModel } from './user.entity.js';
+import { UserEntity } from './user.entity.js';
+import { UserModel } from '../entities/index.js';
 import { ControllerInterface } from '../../core/controller/controller.interface.js';
 import UserController from './user.controller.js';
 

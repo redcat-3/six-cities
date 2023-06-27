@@ -1,5 +1,5 @@
 import { RentType } from '../../../types/rent-type.enum.js';
-import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude, IsNotEmpty, IsUrl, IsArray, ValidateNested, ArrayMinSize } from 'class-validator';
+import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude, IsNotEmpty, IsUrl, IsArray, ArrayMinSize } from 'class-validator';
 import { CityNames } from '../../../types/city-names.enum.js';
 import { MAX_TITLE_LENGHT, MIN_TITLE_LENGHT, MIN_DESC_LENGHT, MAX_DESC_LENGHT, COUNT_OF_IMAGES, MIN_ROOMS_NUMBER, MAX_ROOMS_NUMBER, MIN_GEST_NUMBER, MAX_GEST_NUMBER, MIN_PRICE, MAX_PRICE } from '../offer.constant.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
@@ -21,9 +21,7 @@ export default class CreateOfferDto {
   public previewImage!: string;
 
   @IsArray()
-  @ValidateNested({ each: true })
   @ArrayMinSize(COUNT_OF_IMAGES, {message: `Count of image must be ${COUNT_OF_IMAGES}`})
-  @IsUrl()
   public images!: string[];
 
   @IsBoolean({message: 'Field isPremium must be boolean'})

@@ -4,13 +4,42 @@ import CreateOfferDto from './dto/create-offer.dto.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 
 export interface OfferServiceInterface {
-  create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
-  updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null>;
-  deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  find(userId?: string, count?: number): Promise<DocumentType<OfferEntity>[]>;
-  findById(offerId: string, userId?: string): Promise<DocumentType<OfferEntity> | null>
-  findPremiumOffers(city: string, count?: number): Promise<DocumentType<OfferEntity>[]>;
-  findFavorite(favoriteList:string[]):Promise<DocumentType<OfferEntity>[]| null>;
+  createOffer(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
+
+  findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+
+  updateByOfferId(
+    offerId: string,
+    dto: UpdateOfferDto
+  ): Promise<DocumentType<OfferEntity> | null>;
+
+  deleteByOfferId(offerId: string): Promise<DocumentType<OfferEntity> | null>;
+
+  find(
+    userAuthId?: string,
+    count?: number
+  ): Promise<DocumentType<OfferEntity>[] | null>;
+
+  findPremiumOffers(
+    cityName: string,
+    userAuthId?: string
+  ): Promise<DocumentType<OfferEntity>[] | null>;
+
+  addFavorite(
+    userId: string,
+    offerId: string
+  ): Promise<DocumentType<OfferEntity> | null>;
+
+  removeFavorite(
+    userId: string,
+    offerId: string
+  ): Promise<DocumentType<OfferEntity> | null>;
+
+  findFavoritesByUserId(
+    userId: string
+  ): Promise<DocumentType<OfferEntity>[] | null>;
+
   addComment(offerId: string, newRating: number): Promise<DocumentType<OfferEntity> | null>;
-  exists(documentId: string): Promise<boolean>;
+
+  exists(documentId: string): Promise<boolean>
 }

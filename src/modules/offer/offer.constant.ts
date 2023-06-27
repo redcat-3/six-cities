@@ -17,6 +17,27 @@ export const MIN_GEST_NUMBER = 1;
 export const MAX_GEST_NUMBER = 10;
 export const MIN_PRICE = 100;
 export const MAX_PRICE = 100000;
+export const DEFAULT_PREVIEW_IMAGE = 'room1.jpg';
+export const RATING_DEFAULT = 0;
+export const RETURNABLE_FIELDS = {
+  title: 1,
+  postDate: 1,
+  cityName: 1,
+  previewImage: 1,
+  isPremium: 1,
+  rating: 1,
+  isFavorite: 1,
+  offerType: 1,
+  price: 1,
+  commentsCount: 1,
+  latitude: 1,
+  longitude: 1,
+  id: 1,
+  'user.name': 1,
+  'user.email': 1,
+  'user.avatarUrl': 1,
+  'user.userType': 1,
+};
 
 export const LATITUDE = {
   MIN: 40,

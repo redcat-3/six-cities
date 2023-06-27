@@ -1,4 +1,4 @@
-import typegoose, { defaultClasses, getModelForClass, Ref } from '@typegoose/typegoose';
+import typegoose, { defaultClasses, Ref } from '@typegoose/typegoose';
 import { UserEntity } from '../user/user.entity.js';
 import { RentType } from '../../types/rent-type.enum.js';
 import { CityNames } from '../../types/city-names.enum.js';
@@ -99,7 +99,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public features!: FeatureType[];
 
   @prop({
-    ref: UserEntity,
+    ref: () => UserEntity,
     required: true
   })
   public userId!: Ref<UserEntity>;
@@ -123,4 +123,4 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   }
 }
 
-export const OfferModel = getModelForClass(OfferEntity);
+//export const OfferModel = getModelForClass(OfferEntity);

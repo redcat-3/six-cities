@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-// import * as core from 'express-serve-static-core';
 import { inject, injectable } from 'inversify';
 import { Controller } from '../../core/controller/controller.abstract.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
@@ -20,16 +19,13 @@ import { UploadFileMiddleware } from '../../core/middlewares/upload-file.middlew
 import { UnknownRecord } from '../../types/unknown-record.type.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
-import OfferIndexRdo from '../offer/rdo/offer-index.rdo.js';
-//import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
-import { OfferServiceInterface } from '../offer/offer-service.interface.js';
+import UploadAvatarRdo from './rdo/upload-avatar.rdo.js';
 
 @injectable()
 export default class UserController extends Controller {
   constructor(
     @inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
     @inject(AppComponent.UserServiceInterface) private readonly userService: UserServiceInterface,
-    @inject(AppComponent.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
     @inject(AppComponent.ConfigInterface) private readonly configService: ConfigInterface<RestSchema>
   ) {
     super(logger);
@@ -61,12 +57,7 @@ export default class UserController extends Controller {
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
       ]
     });
-    this.addRoute({
-      path: '/favorite',
-      method: HttpMethod.Get,
-      handler: this.indexFavoriteOffers,
-      //middlewares: [new PrivateRouteMiddleware()]
-    });
+
   }
 
   public async create(
@@ -137,30 +128,9 @@ export default class UserController extends Controller {
   }
 
   public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
-    });
-  }
-
-  public async indexFavoriteOffers({ user: { id } }: Request, res: Response):Promise<void> {
-    const foundedUser = await this.userService.findById(id);
-
-    if (! foundedUser) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
-        'UserController'
-      );
-    }
-    const favoriteOffers = foundedUser.getFavoriteOffers();
-    if(! favoriteOffers || favoriteOffers.length === 0) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'NOT FOUND',
-        'UserController'
-      );
-    }
-    const offers = await this.offerService.findFavorite(favoriteOffers);
-    this.ok(res, fillDTO(OfferIndexRdo, offers));
+    const {userId} = req.params;
+    const uploadFile = {avatarPath: req.file?.filename};
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDTO(UploadAvatarRdo, uploadFile));
   }
 }
