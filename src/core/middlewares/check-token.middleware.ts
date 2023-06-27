@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { BLOCKED_TOKENS } from './middleware.const.js';
+import { BLOCKED_TOKENS } from '../../modules/user/user.constant.js';
 import HttpError from '../../core/errors/http-error.js';
 import { MiddlewareInterface } from './middleware.interface.js';
 

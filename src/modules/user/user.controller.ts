@@ -20,6 +20,8 @@ import { UnknownRecord } from '../../types/unknown-record.type.js';
 import { JWT_ALGORITHM } from './user.constant.js';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
 import UploadAvatarRdo from './rdo/upload-avatar.rdo.js';
+import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
+import { BLOCKED_TOKENS } from './user.constant.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -47,6 +49,12 @@ export default class UserController extends Controller {
       path: '/login',
       method: HttpMethod.Get,
       handler: this.checkAuthenticate,
+    });
+    this.addRoute({
+      path: '/logout',
+      method: HttpMethod.Delete,
+      handler: this.logout,
+      middlewares: [new PrivateRouteMiddleware()],
     });
     this.addRoute({
       path: '/:userId/avatar',
@@ -111,6 +119,22 @@ export default class UserController extends Controller {
       email: user.email,
       token
     }));
+  }
+
+  public async logout(req: Request, res: Response): Promise<void> {
+    const token = String(req.headers.authorization?.split(' ')[1]);
+
+    if (!req.user) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+
+    BLOCKED_TOKENS.add(token);
+
+    this.noContent(res, { token });
   }
 
   public async checkAuthenticate({ user: { email }}: Request, res: Response) {
