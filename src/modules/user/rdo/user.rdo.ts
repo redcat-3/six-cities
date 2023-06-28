@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+import { UserType } from '../../../types/user-type.enum.js';
 
 export default class UserRdo {
   @Expose()
@@ -11,5 +12,5 @@ export default class UserRdo {
   public name!: string;
 
   @Expose()
-  public isPro!: boolean;
+  public isPro!: UserType;
 }

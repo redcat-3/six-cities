@@ -1,18 +1,18 @@
 # Комментарии
 ## Создать комментарий
 POST http://localhost:4000/comments HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0ODVmMzU4Mjk5MTUyNDk2YjgwMGE2MiIsImlhdCI6MTY4NzAwNTE2MCwiZXhwIjoxNjg3MTc3OTYwfQ.pUEDwXkduwzTNxD93m3H95PIM0sb5FyhqZUgS5GC3EE
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4Nzc5NTYxMywiZXhwIjoxNjg3OTY4NDEzfQ.oHuCNg3bL33T_WNiH8dSSpqk5_Qk9V0XrUXyGAi4nxE
 Content-Type: application/json
 
 {
-  "text": "In our beautiful screened Pondhouse, you can gaze at the stars and listen to the sounds of nature from your cozy warm bed",
+  "text": "You can gaze at the stars and listen to the sounds of nature from your cozy warm bed",
   "rating": 5,
-  "offerId": "648ef28f9fcfb7929ef123e8"
+  "offerId": "64998ca950ea85de6e1fa9e5"
 }
 
 ###
 
 ## Список комментариев к объявлению
-GET http://localhost:4000/offers/64882026088e008f213d3e67/comments HTTP/1.1
+GET http://localhost:4000/offers/64998ca950ea85de6e1fa9e5/comments HTTP/1.1
 
 ###

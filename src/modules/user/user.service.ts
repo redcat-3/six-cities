@@ -1,14 +1,12 @@
 import { UserEntity } from './user.entity.js';
-import { DocumentType, types } from '@typegoose/typegoose';
+import { DocumentType, mongoose, types } from '@typegoose/typegoose';
 import CreateUserDto from './dto/create-user.dto.js';
-import {UserServiceInterface} from './user-service.interface.js';
+import { UserServiceInterface } from './user-service.interface.js';
 import { inject, injectable } from 'inversify';
 import { AppComponent } from '../../types/app-component.enum.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import UpdateUserDto from './dto/update-user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
-import HttpError from '../../core/errors/http-error.js';
-import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -42,7 +40,6 @@ export default class UserService implements UserServiceInterface {
     if (existedUser) {
       return existedUser;
     }
-
     return this.create(dto);
   }
 
@@ -66,39 +63,33 @@ export default class UserService implements UserServiceInterface {
     }
   }
 
-  public async addFavorite(offerId: string, userId: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel
-      .findByIdAndUpdate(userId, { $push: {favoriteOffers: offerId}}, {upset: true})
-      .exec();
+  public async addToFavoriteById(
+    userId: string,
+    offerId: string
+  ): Promise<void> {
+    await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $addToSet: { favoriteOffers: new mongoose.Types.ObjectId(offerId) },
+      },
+      { new: true, upsert: true }
+    );
   }
 
-  public async deleteFavorite(offerId: string, userId: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel
-      .findByIdAndUpdate(userId, { $pull: {favoriteOffers: offerId}}, {upset: true})
-      .exec();
+  public async removeFromFavoritesById(
+    userId: string,
+    offerId: string
+  ): Promise<void> {
+    await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      {
+        $pull: { favoriteOffers: new mongoose.Types.ObjectId(offerId) },
+      },
+      { new: true }
+    );
   }
 
-  public async changeFavorite(offerId: string, userId: string): Promise<boolean> {
-    const foundedUser = await this.findById(userId);
-    let result = false;
-    if(!foundedUser) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
-        'UserController'
-      );
-    }
-    if(foundedUser) {
-      console.log(foundedUser.getFavoriteOffers());
-      if(foundedUser.isFavoriteOffers(offerId)) {
-        foundedUser.deleteFavoriteOffers(offerId);
-      } else {
-        foundedUser.addFavoriteOffers(offerId);
-        result = true;
-      }
-    }
-    await foundedUser.save();
-    return result;
+  public async exists(userId: string): Promise<boolean> {
+    return (await this.userModel.exists({_id: userId})) !== null;
   }
-
 }

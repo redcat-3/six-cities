@@ -8,8 +8,7 @@ import ConsoleLoggerService from '../logger/console.service.js';
 import OfferService from '../../modules/offer/offer.service.js';
 import UserService from '../../modules/user/user.service.js';
 import { Offer } from '../../types/offer.type.js';
-import { UserModel } from '../../modules/user/user.entity.js';
-import { OfferModel } from '../../modules/offer/offer.entity.js';
+import { OfferModel, UserModel } from '../../modules/entities/index.js';
 import { DatabaseClientInterface } from '../database-client/database-client.interface.js';
 import { ConfigInterface } from '../config/config.interface.js';
 import { RestSchema } from '../config/rest.schema.js';
@@ -32,7 +31,7 @@ export default class ImportCommand implements CliCommandInterface {
     this.onComplete = this.onComplete.bind(this);
 
     this.logger = new ConsoleLoggerService();
-    this.offerService = new OfferService(this.logger, OfferModel);
+    this.offerService = new OfferService(this.logger, OfferModel, this.userService);
     this.userService = new UserService(this.logger, UserModel);
     this.config = new ConfigService(this.logger);
     this.databaseService = new MongoClientService(this.logger);
@@ -44,7 +43,7 @@ export default class ImportCommand implements CliCommandInterface {
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
 
-    await this.offerService.create({
+    await this.offerService.createOffer({
       ...offer,
       userId: user.id,
     });

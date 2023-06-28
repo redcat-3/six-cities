@@ -8,7 +8,7 @@ import { getMongoURI } from '../core/helpers/index.js';
 import express, { Express } from 'express';
 import { ControllerInterface } from '../core/controller/controller.interface.js';
 import { ExceptionFilterInterface } from '../core/expception-filters/exception-filter.interface.js';
-//import { AuthenticateMiddleware } from '../core/middlewares/authenticate.middleware.js';
+import { AuthenticateMiddleware } from '../core/middlewares/authenticate.middleware.js';
 
 @injectable()
 export default class RestApplication {
@@ -25,7 +25,7 @@ export default class RestApplication {
     this.expressApplication = express();
   }
 
-  private async _initDb() {
+  private async initDb() {
     this.logger.info('Init database…');
 
     const mongoUri = getMongoURI(
@@ -40,7 +40,7 @@ export default class RestApplication {
     this.logger.info('Init database completed');
   }
 
-  private async _initServer() {
+  private async initServer() {
     this.logger.info('Try to init server…');
 
     const port = this.config.get('PORT');
@@ -49,7 +49,7 @@ export default class RestApplication {
     this.logger.info(`🚀Server started on http://localhost:${port}`);
   }
 
-  private async _initRoutes() {
+  private async initRoutes() {
     this.logger.info('Controller initialization…');
     this.expressApplication.use('/users', this.userController.router);
     this.expressApplication.use('/offers', this.offerController.router);
@@ -57,20 +57,20 @@ export default class RestApplication {
     this.logger.info('Controller initialization completed');
   }
 
-  private async _initMiddleware() {
+  private async initMiddleware() {
     this.logger.info('Global middleware initialization…');
     this.expressApplication.use(express.json());
     this.expressApplication.use(
       '/upload',
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
-    //const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
-    //this.expressApplication.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
+    this.expressApplication.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
 
     this.logger.info('Global middleware initialization completed');
   }
 
-  private async _initExceptionFilters() {
+  private async initExceptionFilters() {
     this.logger.info('Exception filters initialization');
     this.expressApplication.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
     this.logger.info('Exception filters completed');
@@ -79,12 +79,12 @@ export default class RestApplication {
   public async init() {
     this.logger.info('Application initialization…');
 
-    await this._initDb()
+    await this.initDb()
       .catch(console.error);
-    await this._initMiddleware();
-    await this._initRoutes();
-    await this._initExceptionFilters();
-    await this._initServer()
+    await this.initMiddleware();
+    await this.initRoutes();
+    await this.initExceptionFilters();
+    await this.initServer()
       .catch(console.error);
   }
 }

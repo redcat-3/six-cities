@@ -1,9 +1,9 @@
-import typegoose, { defaultClasses, getModelForClass, Ref } from '@typegoose/typegoose';
+import typegoose, { defaultClasses, Ref } from '@typegoose/typegoose';
 import { UserEntity } from '../user/user.entity.js';
 import { RentType } from '../../types/rent-type.enum.js';
 import { CityNames } from '../../types/city-names.enum.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
-import { MAX_TITLE_LENGHT, MIN_TITLE_LENGHT, MIN_DESC_LENGHT, MAX_DESC_LENGHT, MIN_ROOMS_NUMBER, MAX_ROOMS_NUMBER, MIN_GEST_NUMBER, MAX_GEST_NUMBER, MIN_PRICE, MAX_PRICE, MAX_RATING } from './offer.constant.js';
+import { TITLE_LENGHT, DESC_LENGHT, ROOMS_NUMBER, GEST_NUMBER, PRICE, RATING } from './offer.constant.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -18,16 +18,16 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({
     trim: true,
     required: true,
-    minlength: MIN_TITLE_LENGHT,
-    maxlength: MAX_TITLE_LENGHT
+    minlength: TITLE_LENGHT.MIN,
+    maxlength: TITLE_LENGHT.MAX
   })
   public title!: string;
 
   @prop({
     trim: true,
     required: true,
-    minlength: MIN_DESC_LENGHT,
-    maxlength: MAX_DESC_LENGHT
+    minlength: DESC_LENGHT.MIN,
+    maxlength: DESC_LENGHT.MAX
   })
   public description!: string;
 
@@ -54,11 +54,11 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     required: true,
     default: false,
   })
-  private isFavorite?: boolean;
+  public isFavorite?: boolean;
 
   @prop({
     default: 0,
-    max: MAX_RATING
+    max: RATING.MAX
   })
   public rating!: number;
 
@@ -71,22 +71,22 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    min: MIN_ROOMS_NUMBER,
-    max: MAX_ROOMS_NUMBER
+    min: ROOMS_NUMBER.MIN,
+    max: ROOMS_NUMBER.MAX
   })
   public roomsNumber!: number;
 
   @prop({
     required: true,
-    min: MIN_GEST_NUMBER,
-    max: MAX_GEST_NUMBER
+    min: GEST_NUMBER.MIN,
+    max: GEST_NUMBER.MAX
   })
   public gestNumber!: number;
 
   @prop({
     required: true,
-    min: MIN_PRICE,
-    max: MAX_PRICE
+    min: PRICE.MIN,
+    max: PRICE.MAX
   })
   public price!: number;
 
@@ -99,7 +99,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public features!: FeatureType[];
 
   @prop({
-    ref: UserEntity,
+    ref: () => UserEntity,
     required: true
   })
   public userId!: Ref<UserEntity>;
@@ -122,5 +122,3 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     return this.isFavorite;
   }
 }
-
-export const OfferModel = getModelForClass(OfferEntity);

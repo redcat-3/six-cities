@@ -9,7 +9,7 @@ export default class GenerateCommand implements CliCommandInterface {
   private initialData!: MockData;
 
   public async execute(...parameters:string[]): Promise<void> {
-    const [count, filepath, url] = parameters;
+    const [count, filePath, url] = parameters;
     const offerCount = Number.parseInt(count, 10);
     this.initialData = await got.get(url)
       .json()
@@ -19,10 +19,10 @@ export default class GenerateCommand implements CliCommandInterface {
         return {} as MockData;
       });
     const offerGeneratorString = new OfferGenerator(this.initialData);
-    const tsvFileWriter = new TSVFileWriter(filepath);
+    const tsvFileWriter = new TSVFileWriter(filePath);
     for (let i = 0; i < offerCount; i++) {
       await tsvFileWriter.write(offerGeneratorString.generate());
     }
-    console.log(`File ${filepath} was created!`);
+    console.log(`File ${filePath} was created!`);
   }
 }

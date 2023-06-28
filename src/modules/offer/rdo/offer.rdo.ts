@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import UserRdo from '../../user/rdo/user.rdo.js';
 
 export default class OfferRdo {
-  @Expose()
+  @Expose({ name: '_id'})
   public id!: string;
 
   @Expose()

@@ -11,7 +11,7 @@ export interface UserServiceInterface {
   findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   updateById(userId: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null>;
   verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null>;
-  addFavorite(offerId: string, userId: string): Promise<DocumentType<UserEntity> | null>;
-  deleteFavorite(offerId: string, userId: string): Promise<DocumentType<UserEntity> | null>;
-  changeFavorite(offerId: string, userId: string): Promise<boolean>;
+  addToFavoriteById(userId: string, offerId: string): Promise<void>;
+  removeFromFavoritesById(userId: string, offerId: string): Promise<void>;
+  exists(userId: string): Promise<boolean>
 }

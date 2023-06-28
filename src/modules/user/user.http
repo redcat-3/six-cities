@@ -26,18 +26,18 @@ Content-Type: application/json
 
 ###
 
-## Отправить изображение
+## Отправка аватарки пользователю
 
-POST http://localhost:4000/users/62823cb2c5a64ce9f1b50eb6/avatar HTTP/1.1
+POST http://localhost:4000/users/649066da856f0181cf2b7dde/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4Nzc5NTYxMywiZXhwIjoxNjg3OTY4NDEzfQ.oHuCNg3bL33T_WNiH8dSSpqk5_Qk9V0XrUXyGAi4nxE
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Disposition: form-data; name="avatar"; filename="image.png"
 Content-Type: image/png
 
-< /Users/tmp/screen.png
+< ./static/default-avatar2.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
-
 ###
 
 ## Проверить токен пользователя## Проверить токен пользователя
@@ -46,9 +46,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRlc3RAb3Zlcmxvb2submV0I
 
 ###
 
-## Список избранных объявлений по аренде
-
-GET http://localhost:4000/users/favorite HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4NzI3NTYwNCwiZXhwIjoxNjg3NDQ4NDA0fQ.qDjykWAQGFWQGuICP7jXrc2hzHQGg7-DBw01ZAnxWt0
-
+## Выход из закрытой части приложения (5.10)
+DELETE http://localhost:4000/users/logout HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im1ha2VldmhvbWVAbWFpbC5uZXQiLCJpZCI6IjY0OTMxODk1Zjg1YWVhNzYzNmNmNDkxYiIsImlhdCI6MTY4NzQxNDMxNiwiZXhwIjoxNjg3NTg3MTE2fQ.EzoLxnS7qtvwcGrvLlgK-r8BgDTvSBoCXcTBmUWL4vw
 ###
