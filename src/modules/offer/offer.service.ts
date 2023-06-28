@@ -29,8 +29,48 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findById(
-    offerId: string
+    offerId: string,
+    userAuthId?: string
   ): Promise<DocumentType<OfferEntity> | null> {
+    if (userAuthId) {
+      const user = await this.userService.findById(userAuthId);
+
+      if (!user) {
+        return null;
+      }
+
+      return this.offerModel
+        .findById(offerId)
+        .aggregate([
+          {
+            $set: {
+              isFavorite: {
+                $cond: [{ $in: ['$_id', [...user.favoriteOffers]] }, true, false],
+              },
+            },
+          },
+          { $set: { id: { $toString: '$_id' } } },
+          { $sort: { postDate: SortType.Down } },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'userId',
+              foreignField: '_id',
+              as: 'user',
+            },
+          },
+          {
+            $unwind: {
+              path: '$user',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $project: RETURNABLE_FIELDS,
+          },
+        ])
+        .exec();
+    }
     return this.offerModel.findById(offerId).populate(['userId']).exec();
   }
 

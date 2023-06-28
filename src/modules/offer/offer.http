@@ -52,6 +52,12 @@ Content-Type: application/json
 }
 
 ###
+# Избранные объявления
+
+GET http://localhost:4000/offers/favorite/get HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4Nzc5NTYxMywiZXhwIjoxNjg3OTY4NDEzfQ.oHuCNg3bL33T_WNiH8dSSpqk5_Qk9V0XrUXyGAi4nxE
+
+###
 ## Список премиальных объявлений по аренде
 GET http://localhost:4000/offers/premium/Amsterdam HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjY0OTA2MWE1OGZhNGIyZWVkZTJlZGE0ZCIsImlhdCI6MTY4Nzc5NTYxMywiZXhwIjoxNjg3OTY4NDEzfQ.oHuCNg3bL33T_WNiH8dSSpqk5_Qk9V0XrUXyGAi4nxE

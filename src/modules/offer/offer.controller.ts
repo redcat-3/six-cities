@@ -29,6 +29,8 @@ import { ConfigInterface } from '../../core/config/config.interface.js';
 import { RestSchema } from '../../core/config/rest.schema.js';
 import UploadPreviewRdo from './rdo/upload-preview.rdo.js';
 import { UploadFilesMiddleware } from '../../core/middlewares/upload-files.middleware.js';
+import { DocumentType } from '@typegoose/typegoose';
+import { OfferEntity } from './offer.entity.js';
 
 type ParamsOfferDetails = { offerId: string; } | ParamsDictionary;
 
@@ -163,11 +165,11 @@ export default class OfferController extends Controller {
   }
 
   public async show(
-    { params }: Request<ParamsOfferDetails>,
+    { params, user }: Request<ParamsOfferDetails>,
     res: Response
   ): Promise<void> {
     const { offerId } = params;
-    const offer = await this.offerService.findById(offerId);
+    const offer = await this.offerService.findById(offerId, user.id);
 
     this.ok(res, fillDTO(OfferRdo, offer));
   }
@@ -178,7 +180,16 @@ export default class OfferController extends Controller {
   ): Promise<void> {
     const { query, user } = req;
     const offers = await this.offerService.find(user?.id, query?.limit);
-    this.send(res, StatusCodes.OK, offers);
+    const isAuthorized = !!user;
+
+    if(offers) {
+      const offersWithFavoriteFlag: DocumentType<OfferEntity>[] = offers.map((offer) => ({
+        ...JSON.parse(JSON.stringify(offer)),
+        id: offer?.id,
+        isFavorite: isAuthorized ? offer.isFavorite : false,
+      }));
+      this.ok(res, fillDTO(OfferIndexRdo, offersWithFavoriteFlag || []));
+    }
   }
 
   public async create(
