@@ -70,7 +70,7 @@ export default class UserService implements UserServiceInterface {
     await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
-        $addToSet: { favorites: new mongoose.Types.ObjectId(offerId) },
+        $addToSet: { favoriteOffers: new mongoose.Types.ObjectId(offerId) },
       },
       { new: true, upsert: true }
     );
@@ -83,7 +83,7 @@ export default class UserService implements UserServiceInterface {
     await this.userModel.findOneAndUpdate(
       { _id: userId },
       {
-        $pull: { favorites: new mongoose.Types.ObjectId(offerId) },
+        $pull: { favoriteOffers: new mongoose.Types.ObjectId(offerId) },
       },
       { new: true }
     );
