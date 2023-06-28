@@ -1,22 +1,10 @@
 export const DEFAULT_OFFER_COUNT = 60;
 export const MAX_COMMENTS_COUNT = 50;
 export const DEFAULT_PREMIUM_COUNT = 3;
-export const MAX_RATING = 5;
-export const MIN_RATING = 0;
 export const RATING_COUNT_DIGIT = 2;
 export const PRICE_COUNT_DIGIT = 2;
 export const LOCATION_COUNT_DIGIT = 5;
-export const MIN_TITLE_LENGHT = 10;
-export const MAX_TITLE_LENGHT = 100;
-export const MIN_DESC_LENGHT = 20;
-export const MAX_DESC_LENGHT = 1024;
 export const COUNT_OF_IMAGES = 6;
-export const MIN_ROOMS_NUMBER = 1;
-export const MAX_ROOMS_NUMBER = 8;
-export const MIN_GEST_NUMBER = 1;
-export const MAX_GEST_NUMBER = 10;
-export const MIN_PRICE = 100;
-export const MAX_PRICE = 100000;
 export const DEFAULT_PREVIEW_IMAGE = 'room1.jpg';
 export const RATING_DEFAULT = 0;
 export const RETURNABLE_FIELDS = {
@@ -39,18 +27,48 @@ export const RETURNABLE_FIELDS = {
   'user.userType': 1,
 };
 
-export const LATITUDE = {
-  MIN: 40,
-  MAX: 50
-};
+export const enum RATING {
+  MIN = 0,
+  MAX = 5
+}
 
-export const LONGITUDE = {
-  MIN: 4,
-  MAX: 6
-};
+export const enum TITLE_LENGHT {
+  MIN = 10,
+  MAX = 100
+}
 
-export const WEEK_DAY = {
-  FIRST: 1,
-  LAST: 7
-};
+export const enum DESC_LENGHT {
+  MIN = 20,
+  MAX = 1024
+}
+
+export const enum ROOMS_NUMBER {
+  MIN = 1,
+  MAX = 8
+}
+
+export const enum GEST_NUMBER {
+  MIN = 1,
+  MAX = 10
+}
+
+export const enum PRICE {
+  MIN = 100,
+  MAX = 100000
+}
+
+export const enum LATITUDE {
+  MIN = 40,
+  MAX = 50
+}
+
+export const enum LONGITUDE {
+  MIN = 4,
+  MAX = 6
+}
+
+export const enum WEEK_DAY {
+  FIRST = 1,
+  LAST = 7
+}
 

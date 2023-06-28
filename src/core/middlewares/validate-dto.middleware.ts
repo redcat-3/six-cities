@@ -8,7 +8,7 @@ import { MiddlewareInterface } from './middleware.interface.js';
 export class ValidateDtoMiddleware implements MiddlewareInterface {
   constructor(private dto: ClassConstructor<object>) {}
 
-  public async execute({body}: Request, res: Response, next: NextFunction): Promise<void> {
+  public async execute({ body }: Request, res: Response, next: NextFunction): Promise<void> {
     const dtoInstance = plainToInstance(this.dto, body);
     const errors = await validate(dtoInstance, {validationError: { target: false}});
 

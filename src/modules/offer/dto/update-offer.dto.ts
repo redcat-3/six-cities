@@ -1,18 +1,18 @@
 import { RentType } from '../../../types/rent-type.enum.js';
 import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional, IsNotEmpty, IsUrl, ValidateNested, ArrayMinSize, IsLatitude, IsLongitude } from 'class-validator';
-import { MIN_TITLE_LENGHT, MAX_TITLE_LENGHT, MIN_DESC_LENGHT, MAX_DESC_LENGHT, COUNT_OF_IMAGES, MIN_ROOMS_NUMBER, MAX_ROOMS_NUMBER, MIN_GEST_NUMBER, MAX_GEST_NUMBER, MAX_PRICE, MIN_PRICE } from '../offer.constant.js';
+import { TITLE_LENGHT, DESC_LENGHT, COUNT_OF_IMAGES, ROOMS_NUMBER, GEST_NUMBER, PRICE } from '../offer.constant.js';
 import { CityNames } from '../../../types/city-names.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
 export default class UpdateOfferDto {
   @IsOptional()
-  @MinLength(MIN_TITLE_LENGHT, {message: `Minimum title length must be ${MIN_TITLE_LENGHT}`})
-  @MaxLength(MAX_TITLE_LENGHT, {message: `Maximum title length must be ${MAX_TITLE_LENGHT}`})
+  @MinLength(TITLE_LENGHT.MIN, {message: `Minimum title length must be ${TITLE_LENGHT.MIN}`})
+  @MaxLength(TITLE_LENGHT.MAX, {message: `Maximum title length must be ${TITLE_LENGHT.MAX}`})
   public title?: string;
 
   @IsOptional()
-  @MinLength(MIN_DESC_LENGHT, {message: `Minimum title length must be ${MIN_DESC_LENGHT}`})
-  @MaxLength(MAX_DESC_LENGHT, {message: `Maximum title length must be ${MAX_DESC_LENGHT}`})
+  @MinLength(DESC_LENGHT.MIN, {message: `Minimum title length must be ${DESC_LENGHT.MIN}`})
+  @MaxLength(DESC_LENGHT.MAX, {message: `Maximum title length must be ${DESC_LENGHT.MAX}`})
   public description?: string;
 
   @IsOptional()
@@ -44,20 +44,20 @@ export default class UpdateOfferDto {
 
   @IsOptional()
   @IsInt({message: 'BedroomsNumber must be an integer'})
-  @Min(MIN_ROOMS_NUMBER, {message: `Minimum roomsNumber is ${MIN_ROOMS_NUMBER}`})
-  @Max(MAX_ROOMS_NUMBER, {message: `Maximum roomsNumber is ${MAX_ROOMS_NUMBER}`})
+  @Min(ROOMS_NUMBER.MIN, {message: `Minimum roomsNumber is ${ROOMS_NUMBER.MIN}`})
+  @Max(ROOMS_NUMBER.MAX, {message: `Maximum roomsNumber is ${ROOMS_NUMBER.MAX}`})
   public roomsNumber?: number;
 
   @IsOptional()
   @IsInt({message: 'GestNumber must be an integer'})
-  @Min(MIN_GEST_NUMBER, {message: `Minimum gestNumber is  ${MIN_GEST_NUMBER}`})
-  @Max(MAX_GEST_NUMBER, {message: `Maximum gestNumber is ${MAX_GEST_NUMBER}`})
+  @Min(GEST_NUMBER.MIN, {message: `Minimum gestNumber is  ${GEST_NUMBER.MIN}`})
+  @Max(GEST_NUMBER.MAX, {message: `Maximum gestNumber is ${GEST_NUMBER.MAX}`})
   public gestNumber?: number;
 
   @IsOptional()
   @IsInt({message: 'Price must be an integer'})
-  @Min(MIN_PRICE, {message: `Minimum price is ${MIN_PRICE}`})
-  @Max(MAX_PRICE, {message: `Maximum price is ${MAX_PRICE}`})
+  @Min(PRICE.MIN, {message: `Minimum price is ${PRICE.MIN}`})
+  @Max(PRICE.MAX, {message: `Maximum price is ${PRICE.MAX}`})
   public price?: number;
 
   @IsOptional()

@@ -1,15 +1,15 @@
 import {IsMongoId, IsString, Length, IsInt, Min, Max, IsNotEmpty } from 'class-validator';
-import { MIN_RATING, MAX_RATING, MIN_LENGTH_COMMENT_TEXT, MAX_LENGTH_COMMENT_TEXT } from '../comment.constant.js';
+import { RATING, LENGTH_COMMENT_TEXT } from '../comment.constant.js';
 
 export default class CreateCommentDto {
   @IsNotEmpty({message: 'text must be not empty'})
   @IsString({message: 'text is required'})
-  @Length(MIN_LENGTH_COMMENT_TEXT, MAX_LENGTH_COMMENT_TEXT, {message: `Min length is ${MIN_LENGTH_COMMENT_TEXT}, max is ${MAX_LENGTH_COMMENT_TEXT}`})
+  @Length(LENGTH_COMMENT_TEXT.MIN, LENGTH_COMMENT_TEXT.MAX, {message: `Min length is ${LENGTH_COMMENT_TEXT.MIN}, max is ${LENGTH_COMMENT_TEXT.MAX}`})
   public text!: string;
 
   @IsInt({message: 'Rating must be an integer'})
-  @Min(MIN_RATING, {message: `Minimum rating is ${MIN_RATING}`})
-  @Max(MAX_RATING, {message: `Maximum rating is ${MAX_RATING}`})
+  @Min(RATING.MIN, {message: `Minimum rating is ${RATING.MIN}`})
+  @Max(RATING.MAX, {message: `Maximum rating is ${RATING.MAX}`})
   public rating!: number;
 
   @IsMongoId({message: 'offerId field must be a valid id'})

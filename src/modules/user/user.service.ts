@@ -40,7 +40,6 @@ export default class UserService implements UserServiceInterface {
     if (existedUser) {
       return existedUser;
     }
-
     return this.create(dto);
   }
 
