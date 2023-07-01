@@ -17,11 +17,11 @@ import { ValidateDtoMiddleware } from '../../core/middlewares/validate-dto.middl
 import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../core/middlewares/upload-file.middleware.js';
 import { UnknownRecord } from '../../types/unknown-record.type.js';
-import { JWT_ALGORITHM } from './user.constant.js';
+import { JWT_ALGORITHM } from './user.constant';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
 import UploadAvatarRdo from './rdo/upload-avatar.rdo.js';
 import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
-import { BLOCKED_TOKENS } from './user.constant.js';
+import { BLOCKED_TOKENS } from './user.constant';
 
 @injectable()
 export default class UserController extends Controller {
