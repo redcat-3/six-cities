@@ -22,7 +22,6 @@ import { UnknownRecord } from '../../types/unknown-record.type.js';
 import HttpError from '../../core/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import { RequestQuery } from '../../types/request-query.type.js';
-import { DEFAULT_PREVIEW_IMAGE } from './offer.constant.js';
 import UploadImagesRdo from './rdo/upload-images.rdo.js';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { ConfigInterface } from '../../core/config/config.interface.js';
@@ -42,9 +41,10 @@ export default class OfferController extends Controller {
     @inject(AppComponent.LoggerInterface) protected readonly logger: LoggerInterface,
     @inject(AppComponent.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
     @inject(AppComponent.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
-    @inject(AppComponent.ConfigInterface) private readonly configService: ConfigInterface<RestSchema>
+    @inject(AppComponent.ConfigInterface) configService: ConfigInterface<RestSchema>,
   ) {
-    super(logger);
+    super(logger, configService);
+
     this.logger.info('Register routes for OfferController…');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
@@ -199,7 +199,6 @@ export default class OfferController extends Controller {
     const result = await this.offerService.createOffer({
       ...body,
       userId: user.id,
-      previewImage: DEFAULT_PREVIEW_IMAGE,
     });
     const offer = await this.offerService.findById(result.id);
     this.created(res, fillDTO(OfferRdo, offer));

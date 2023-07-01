@@ -1,14 +1,10 @@
-import { IsEmail, IsString, IsUrl, Length, Matches } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 import { NAME_LENGHT, PASSWORD_LENGHT } from '../user.constant.js';
 import { UserType } from '../../../types/user-type.enum.js';
 
 export default class CreateUserDto {
   @IsEmail({}, {message: 'Email must be valid address'})
   public email!: string;
-
-  @IsUrl()
-  @Matches((/\.(jpe?g|png)$/i), {message: 'File should be end with any one of the following extensions: jpg, jpeg, png'})
-  public avatarPath?: string;
 
   @IsString({message: 'name is required'})
   @Length(NAME_LENGHT.MIN, NAME_LENGHT.MAX, {message: `Min length is ${NAME_LENGHT.MIN}, max is ${NAME_LENGHT.MAX}`})

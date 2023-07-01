@@ -1,7 +1,7 @@
 import { User } from '../../types/user.type.js';
 import typegoose, { Ref, defaultClasses } from '@typegoose/typegoose';
 import { createSHA256 } from '../../core/helpers/common.js';
-import { DEFAULT_USER_AVATAR } from './user.constant.js';
+import { DEFAULT_AVATAR_FILE_NAME } from './user.constant.js';
 import { UserType } from '../../types/user-type.enum.js';
 import { OfferEntity } from '../offer/offer.entity.js';
 
@@ -46,7 +46,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   constructor(userData: User) {
     super();
     this.email = userData.email;
-    this.avatarPath = userData.avatarPath || DEFAULT_USER_AVATAR;
+    this.avatarPath = userData.avatarPath || DEFAULT_AVATAR_FILE_NAME;
     this.name = userData.name;
     this.isPro = userData.isPro;
   }

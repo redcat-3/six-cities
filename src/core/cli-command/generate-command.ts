@@ -3,6 +3,7 @@ import { CliCommandInterface } from './cli-command.interface.js';
 import { MockData } from '../../types/mock-data.type.js';
 import OfferGenerator from '../../modules/offer-generator/offer-generator.js';
 import TSVFileWriter from '../file-writer/tsv-file-writer.js';
+import { DECIMAL } from '../../modules/offer/offer.constant.js';
 
 export default class GenerateCommand implements CliCommandInterface {
   public readonly name = '--generate';
@@ -10,7 +11,7 @@ export default class GenerateCommand implements CliCommandInterface {
 
   public async execute(...parameters:string[]): Promise<void> {
     const [count, filePath, url] = parameters;
-    const offerCount = Number.parseInt(count, 10);
+    const offerCount = Number.parseInt(count, DECIMAL);
     this.initialData = await got.get(url)
       .json()
       .then((data: unknown) => data as MockData)

@@ -1,4 +1,4 @@
-export const DEFAULT_USER_AVATAR = './upload/avatar.png';
+export const DEFAULT_AVATAR_FILE_NAME = 'avatar.png';
 export const JWT_ALGORITHM = 'HS256';
 export const BLOCKED_TOKENS: Set<string> = new Set();
 

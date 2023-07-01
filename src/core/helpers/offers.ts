@@ -1,3 +1,4 @@
+import { DECIMAL } from '../../modules/offer/offer.constant.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
 import { Offer } from '../../types/offer.type.js';
 
@@ -34,12 +35,12 @@ export function createOffer(offerData: string): Offer {
     isPremium: Boolean(isPremium),
     rating: Number.parseFloat(rating),
     type,
-    roomsNumber: Number.parseInt(roomsNumber, 10),
-    gestNumber: Number.parseInt(gestNumber, 10),
+    roomsNumber: Number.parseInt(roomsNumber, DECIMAL),
+    gestNumber: Number.parseInt(gestNumber, DECIMAL),
     price: Number.parseFloat(price),
     features: features.split(';') as unknown as FeatureType[],
     user: { email, avatarPath, name, isPro },
-    latitude: Number.parseInt(latitude, 10),
-    longitude: Number.parseInt(longitude, 10)
+    latitude: Number.parseInt(latitude, DECIMAL),
+    longitude: Number.parseInt(longitude, DECIMAL)
   } as unknown as Offer;
 }

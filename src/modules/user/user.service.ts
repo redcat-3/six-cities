@@ -7,6 +7,7 @@ import { AppComponent } from '../../types/app-component.enum.js';
 import { LoggerInterface } from '../../core/logger/logger.interface.js';
 import UpdateUserDto from './dto/update-user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
+import { DEFAULT_AVATAR_FILE_NAME } from './user.constant.js';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -16,7 +17,7 @@ export default class UserService implements UserServiceInterface {
   ) {}
 
   public async create(dto: CreateUserDto): Promise<DocumentType<UserEntity>>{
-    const user = new UserEntity(dto);
+    const user = new UserEntity({...dto, avatarPath: DEFAULT_AVATAR_FILE_NAME});
     const salt = process.env.SALT;
     user.setPassword(dto.password, salt ? salt : '');
 
@@ -52,11 +53,7 @@ export default class UserService implements UserServiceInterface {
   public async verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null> {
     const user = await this.findByEmail(dto.email);
 
-    if (! user) {
-      return null;
-    }
-
-    if (user.verifyPassword(dto.password, salt)) {
+    if (user && user.verifyPassword(dto.password, salt)) {
       return user;
     } else {
       return null;

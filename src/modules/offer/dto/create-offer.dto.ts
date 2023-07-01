@@ -1,5 +1,5 @@
 import { RentType } from '../../../types/rent-type.enum.js';
-import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude, IsNotEmpty, IsUrl, IsArray, ArrayMinSize } from 'class-validator';
+import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude, IsArray, ArrayMinSize } from 'class-validator';
 import { CityNames } from '../../../types/city-names.enum.js';
 import { TITLE_LENGHT, DESC_LENGHT, COUNT_OF_IMAGES, ROOMS_NUMBER, GEST_NUMBER, PRICE } from '../offer.constant.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
@@ -15,10 +15,6 @@ export default class CreateOfferDto {
 
   @IsEnum(CityNames, {message: `type must be  ${Object.values(RentType)}`})
   public city!:	CityNames;
-
-  @IsNotEmpty({message: 'Preview image is required'})
-  @IsUrl()
-  public previewImage!: string;
 
   @IsArray()
   @ArrayMinSize(COUNT_OF_IMAGES, {message: `Count of image must be ${COUNT_OF_IMAGES}`})
