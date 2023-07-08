@@ -17,7 +17,10 @@ export default class UserService implements UserServiceInterface {
   ) {}
 
   public async create(dto: CreateUserDto): Promise<DocumentType<UserEntity>>{
-    const user = new UserEntity({...dto, avatarPath: DEFAULT_AVATAR_FILE_NAME});
+    const user = new UserEntity({
+      ...dto,
+      avatarPath: DEFAULT_AVATAR_FILE_NAME
+    });
     const salt = process.env.SALT;
     user.setPassword(dto.password, salt ? salt : '');
 

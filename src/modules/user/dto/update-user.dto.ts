@@ -9,7 +9,7 @@ export default class UpdateUserDto {
 
   @IsOptional()
   @IsString({message: 'Status of user is required'})
-  public isPro?: UserType;
+  public type?: UserType;
 
   @IsOptional()
   @Matches((/\.(jpe?g|png)$/i), {message: 'File should be end with any one of the following extensions: jpg, jpeg, png'})

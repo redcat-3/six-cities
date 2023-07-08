@@ -45,7 +45,7 @@ export default class UpdateOfferDto {
 
   public roomsNumber!: number;
 
-  public gestNumber!: number;
+  public guestNumber!: number;
 
   public price!: number;
 

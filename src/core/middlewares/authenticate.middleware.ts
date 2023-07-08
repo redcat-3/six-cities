@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { jwtVerify } from 'jose';
-import { StatusCodes } from 'http-status-codes';
+//import { StatusCodes } from 'http-status-codes';
 import { createSecretKey } from 'node:crypto';
 import { MiddlewareInterface } from './middleware.interface.js';
-import HttpError from '../errors/http-error.js';
+//import HttpError from '../errors/http-error.js';
 
 export class AuthenticateMiddleware implements MiddlewareInterface {
   constructor(private readonly jwtSecret: string) {}
@@ -26,11 +26,7 @@ export class AuthenticateMiddleware implements MiddlewareInterface {
       return next();
     } catch {
 
-      return next(new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Invalid token',
-        'AuthenticateMiddleware')
-      );
+      return next();
     }
   }
 }

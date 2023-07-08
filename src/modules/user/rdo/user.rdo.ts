@@ -15,5 +15,5 @@ export default class UserRdo {
   public name!: string;
 
   @Expose()
-  public isPro!: UserType;
+  public type!: UserType;
 }

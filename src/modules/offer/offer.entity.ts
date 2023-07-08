@@ -3,7 +3,7 @@ import { UserEntity } from '../user/user.entity.js';
 import { RentType } from '../../types/rent-type.enum.js';
 import { CityNames } from '../../types/city-names.enum.js';
 import { FeatureType } from '../../types/feature-type.enum.js';
-import { TITLE_LENGHT, DESC_LENGHT, ROOMS_NUMBER, GEST_NUMBER, PRICE, RATING } from './offer.constant.js';
+import { TITLE_LENGHT, DESC_LENGHT, ROOMS_NUMBER, GUEST_NUMBER, PRICE, RATING } from './offer.constant.js';
 
 const { prop, modelOptions } = typegoose;
 
@@ -78,10 +78,10 @@ export class OfferEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    min: GEST_NUMBER.MIN,
-    max: GEST_NUMBER.MAX
+    min: GUEST_NUMBER.MIN,
+    max: GUEST_NUMBER.MAX
   })
-  public gestNumber!: number;
+  public guestNumber!: number;
 
   @prop({
     required: true,

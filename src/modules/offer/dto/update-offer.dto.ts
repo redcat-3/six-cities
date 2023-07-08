@@ -1,10 +1,14 @@
 import { RentType } from '../../../types/rent-type.enum.js';
-import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional, IsNotEmpty, IsUrl, ValidateNested, ArrayMinSize, IsLatitude, IsLongitude } from 'class-validator';
-import { TITLE_LENGHT, DESC_LENGHT, COUNT_OF_IMAGES, ROOMS_NUMBER, GEST_NUMBER, PRICE } from '../offer.constant.js';
+import { IsArray, IsDateString, IsEnum, IsInt, IsMongoId, IsBoolean, Max, MaxLength, Min, MinLength, IsOptional, ValidateNested, ArrayMinSize, IsLatitude, IsLongitude, IsString, Validate, IsUrl } from 'class-validator';
+import { TITLE_LENGHT, DESC_LENGHT, COUNT_OF_IMAGES, ROOMS_NUMBER, PRICE, GUEST_NUMBER } from '../offer.constant.js';
 import { CityNames } from '../../../types/city-names.enum.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
+import { ValidImageFormat } from '../../../core/middlewares/valid-image-format.middleware.js';
 
 export default class UpdateOfferDto {
+  @IsOptional()
+  public id?: string;
+
   @IsOptional()
   @MinLength(TITLE_LENGHT.MIN, {message: `Minimum title length must be ${TITLE_LENGHT.MIN}`})
   @MaxLength(TITLE_LENGHT.MAX, {message: `Maximum title length must be ${TITLE_LENGHT.MAX}`})
@@ -24,8 +28,8 @@ export default class UpdateOfferDto {
   public city?:	string;
 
   @IsOptional()
-  @IsNotEmpty({message: 'Preview image is required'})
-  @IsUrl()
+  @IsString({ message: '$property must be a string' })
+  @Validate(ValidImageFormat)
   public previewImage?: string;
 
   @IsOptional()
@@ -50,9 +54,9 @@ export default class UpdateOfferDto {
 
   @IsOptional()
   @IsInt({message: 'GestNumber must be an integer'})
-  @Min(GEST_NUMBER.MIN, {message: `Minimum gestNumber is  ${GEST_NUMBER.MIN}`})
-  @Max(GEST_NUMBER.MAX, {message: `Maximum gestNumber is ${GEST_NUMBER.MAX}`})
-  public gestNumber?: number;
+  @Min(GUEST_NUMBER.MIN, {message: `Minimum gestNumber is  ${GUEST_NUMBER.MIN}`})
+  @Max(GUEST_NUMBER.MAX, {message: `Maximum gestNumber is ${GUEST_NUMBER.MAX}`})
+  public guestNumber?: number;
 
   @IsOptional()
   @IsInt({message: 'Price must be an integer'})

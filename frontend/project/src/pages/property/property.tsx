@@ -34,6 +34,8 @@ const Property = (): JSX.Element | null => {
   const isOfferLoading = useAppSelector(getIsOfferLoading);
   const user = useAppSelector(getUser);
   const offer = useAppSelector(getOffer);
+  // eslint-disable-next-line no-console
+  console.log(offer);
   const premiumOffers = useAppSelector(getPremiumOffers);
   const comments = useAppSelector(selectComments);
   const commentStatus = useAppSelector(getCommentStatus);

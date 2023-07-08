@@ -29,7 +29,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     default: false,
     enum: UserType,
   })
-  public isPro: UserType;
+  public type: UserType;
 
   @prop({required: true, default: ''})
   private password?: string;
@@ -48,7 +48,7 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
     this.email = userData.email;
     this.avatarPath = userData.avatarPath || DEFAULT_AVATAR_FILE_NAME;
     this.name = userData.name;
-    this.isPro = userData.isPro;
+    this.type = userData.type;
   }
 
   public setPassword(password: string, salt: string) {

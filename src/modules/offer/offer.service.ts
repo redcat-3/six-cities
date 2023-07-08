@@ -8,7 +8,7 @@ import { OfferServiceInterface } from './offer-service.interface.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import UpdateOfferDto from './dto/update-offer.dto.js';
 import { DEFAULT_OFFER_COUNT, DEFAULT_PREMIUM_COUNT, RETURNABLE_FIELDS } from './offer.constant.js';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { UserServiceInterface } from '../user/user-service.interface.js';
 
 @injectable()
@@ -29,19 +29,25 @@ export default class OfferService implements OfferServiceInterface {
   }
 
   public async findById(
-    offerId: string,
-    userAuthId?: string
+    offerId: string
   ): Promise<DocumentType<OfferEntity> | null> {
-    if (userAuthId) {
-      const user = await this.userService.findById(userAuthId);
+    return this.offerModel.findById(offerId).populate(['userId']).exec();
+  }
+
+  public async findDetails(
+    offerId: string,
+    userAuthEmail?: string
+  ): Promise<DocumentType<OfferEntity> | null> {
+    if (userAuthEmail) {
+      const user = await this.userService.findByEmail(userAuthEmail);
 
       if (!user) {
         return null;
       }
 
-      return this.offerModel
-        .findById(offerId)
+      const offer = await this.offerModel
         .aggregate([
+          { $match: { _id: new mongoose.Types.ObjectId(offerId)} },
           {
             $set: {
               isFavorite: {
@@ -49,7 +55,8 @@ export default class OfferService implements OfferServiceInterface {
               },
             },
           },
-          { $set: { id: { $toString: '$_id' } } },
+          { $addFields: { id: { $toString: '$_id' },
+            postDate: {$toString: '$createdAt'} } },
           { $sort: { postDate: SortType.Down } },
           {
             $lookup: {
@@ -70,7 +77,9 @@ export default class OfferService implements OfferServiceInterface {
           },
         ])
         .exec();
+      return offer[0] ? offer[0] : 0;
     }
+
     return this.offerModel.findById(offerId).populate(['userId']).exec();
   }
 
@@ -95,16 +104,39 @@ export default class OfferService implements OfferServiceInterface {
     count?: number
   ): Promise<DocumentType<OfferEntity>[] | null> {
     const limit = count ?? DEFAULT_OFFER_COUNT;
-
     if (userAuthId) {
       const user = await this.userService.findById(userAuthId);
-
       if (!user) {
-        return null;
+        return this.offerModel
+          .aggregate([
+            { $match: { } },
+            { $addFields: { id: { $toString: '$_id' },
+              postDate: {$toString: '$createdAt'} } },
+            { $sort: { postDate: SortType.Down } },
+            { $limit: +limit },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'user',
+              },
+            },
+            {
+              $unwind: {
+                path: '$user',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $project: RETURNABLE_FIELDS,
+            },
+          ])
+          .exec();
       }
-
       return this.offerModel
         .aggregate([
+          { $match: { } },
           {
             $set: {
               isFavorite: {
@@ -112,7 +144,8 @@ export default class OfferService implements OfferServiceInterface {
               },
             },
           },
-          { $set: { id: { $toString: '$_id' } } },
+          { $addFields: { id: { $toString: '$_id' },
+            postDate: {$toString: '$createdAt'} } },
           { $sort: { postDate: SortType.Down } },
           { $limit: +limit },
           {
@@ -136,28 +169,8 @@ export default class OfferService implements OfferServiceInterface {
         .exec();
     }
     return this.offerModel
-      .aggregate([
-        { $addFields: { id: { $toString: '$_id' } } },
-        { $sort: { postDate: SortType.Down } },
-        { $limit: +limit },
-        {
-          $lookup: {
-            from: 'users',
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        {
-          $unwind: {
-            path: '$user',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $project: RETURNABLE_FIELDS,
-        },
-      ])
+      .find()
+      .populate(['userId'])
       .exec();
   }
 
@@ -203,7 +216,7 @@ export default class OfferService implements OfferServiceInterface {
 
       return this.offerModel
         .aggregate([
-          { $match: { isPremium: true, city: cityName } },
+          { $match: { isPremium: true, cityName: cityName } },
           {
             $set: {
               isFavorite: {
@@ -212,6 +225,7 @@ export default class OfferService implements OfferServiceInterface {
             },
           },
           { $set: { id: { $toString: '$_id' } } },
+          { $addFields: { postDate: {$toString: '$createdAt'} } },
           { $sort: { postDate: SortType.Down } },
           { $limit: DEFAULT_PREMIUM_COUNT },
           {
@@ -237,8 +251,9 @@ export default class OfferService implements OfferServiceInterface {
 
     return this.offerModel
       .aggregate([
-        { $match: { isPremium: true, city: cityName } },
-        { $addFields: { id: { $toString: '$_id' } } },
+        { $match: { isPremium: true, cityName: cityName } },
+        { $addFields: { id: { $toString: '$_id' },
+          postDate: {$toString: '$createdAt'} } },
         { $sort: { postDate: SortType.Down } },
         { $limit: DEFAULT_PREMIUM_COUNT },
         {
@@ -282,7 +297,8 @@ export default class OfferService implements OfferServiceInterface {
         },
         { $set: { isFavorite: true } },
         { $project: RETURNABLE_FIELDS },
-        { $addFields: { id: { $toString: '$_id' } } },
+        { $addFields: { id: { $toString: '$_id' },
+          postDate: {$toString: '$createdAt'} } },
       ])
       .exec();
   }

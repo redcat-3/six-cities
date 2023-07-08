@@ -23,9 +23,9 @@ const mapTypeToRentType = (type: Type): RentType => {
 export const adaptRegistrToServer =
   (user: UserRegister): CreateUserDto => ({
     name: user.name,
-    userType: user.type,
+    type: user.type,
     email: user.email,
-    avatar: ' ',
+    avatarPath: ' ',
     password: user.password,
   });
 
@@ -40,14 +40,14 @@ export const adaptEditOfferToServer =
     isPremium: offer.isPremium,
     type: mapTypeToRentType(offer.type),
     roomsNumber: offer.bedrooms,
-    gestNumber: offer.maxAdults,
+    guestNumber: offer.maxAdults,
     price: offer.price,
     features: offer.goods as FeatureType[],
     userId: {
       name: offer.host.name,
-      avatar: offer.host.avatarUrl,
+      avatarPath: offer.host.avatarUrl,
       email: offer.host.email,
-      userType: offer.host.type
+      type: offer.host.type
     },
     latitude: offer.location.latitude,
     longitude: offer.location.longitude,
@@ -59,7 +59,8 @@ export const adaptOfferToServer =
       id: offer.id,
       title: offer.title,
       description: offer.description,
-      city: offer.city.name,
+      postDate: offer.postDate,
+      city: offer.city.name as CityNames,
       latitude: offer.location.latitude,
       longitude: offer.location.longitude,
       previewImage: offer.previewImage,
@@ -68,15 +69,15 @@ export const adaptOfferToServer =
       rating: Number(offer.rating),
       type: mapTypeToRentType(offer.type),
       roomsNumber: offer.bedrooms,
-      guestsNumber: offer.maxAdults,
+      guestNumber: offer.maxAdults,
       price: Number(offer.price),
       features: offer.goods as FeatureType[],
       images: offer.images,
       user: {
         name: offer.host.name,
-        avatar: offer.host.avatarUrl,
+        avatarPath: offer.host.avatarUrl,
         email: offer.host.email,
-        userType: offer.host.type
+        type: offer.host.type
       }
     });
 
@@ -85,6 +86,7 @@ export const adaptCreateOfferToServer = (newOffer: NewOffer): CreateOfferDto => 
   createOfferDto.title = newOffer.title;
   createOfferDto.description = newOffer.description;
   createOfferDto.city = newOffer.city.name as CityNames;
+  createOfferDto.previewImage = newOffer.previewImage;
   createOfferDto.isPremium = newOffer.isPremium;
   createOfferDto.type = mapTypeToRentType(newOffer.type);
   createOfferDto.roomsNumber = newOffer.bedrooms;

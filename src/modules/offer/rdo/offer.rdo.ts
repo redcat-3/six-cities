@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import UserRdo from '../../user/rdo/user.rdo.js';
+import { CityNames } from '../../../types/city-names.enum.js';
 
 export default class OfferRdo {
   @Expose({ name: '_id'})
@@ -15,7 +16,7 @@ export default class OfferRdo {
   public postDate!: string;
 
   @Expose()
-  public city!: string;
+  public city!: CityNames;
 
   @Expose()
   public previewImage!: string;
@@ -39,7 +40,7 @@ export default class OfferRdo {
   public roomsNumber!: number;
 
   @Expose()
-  public gestNumber!: number;
+  public guestNumber!: number;
 
   @Expose()
   public price!: number;

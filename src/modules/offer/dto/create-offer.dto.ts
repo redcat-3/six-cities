@@ -1,7 +1,7 @@
 import { RentType } from '../../../types/rent-type.enum.js';
-import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude, IsArray, ArrayMinSize } from 'class-validator';
+import { IsEnum, IsInt, IsBoolean, Max, MaxLength, Min, MinLength, IsLatitude, IsLongitude, IsArray, ArrayMinSize, IsString } from 'class-validator';
 import { CityNames } from '../../../types/city-names.enum.js';
-import { TITLE_LENGHT, DESC_LENGHT, COUNT_OF_IMAGES, ROOMS_NUMBER, GEST_NUMBER, PRICE } from '../offer.constant.js';
+import { TITLE_LENGHT, DESC_LENGHT, COUNT_OF_IMAGES, ROOMS_NUMBER, GUEST_NUMBER, PRICE } from '../offer.constant.js';
 import { FeatureType } from '../../../types/feature-type.enum.js';
 
 export default class CreateOfferDto {
@@ -23,6 +23,9 @@ export default class CreateOfferDto {
   @IsBoolean({message: 'Field isPremium must be boolean'})
   public isPremium!: boolean;
 
+  @IsString({ message: '$property must be a string' })
+  public previewImage?: string;
+
   @IsEnum(RentType, {message: `type must be ${Object.values(RentType)}`})
   public type!: RentType;
 
@@ -32,9 +35,9 @@ export default class CreateOfferDto {
   public roomsNumber!: number;
 
   @IsInt({message: 'GestNumber must be an integer'})
-  @Min(GEST_NUMBER.MIN, {message: `Minimum gestNumber is  ${GEST_NUMBER.MIN}`})
-  @Max(GEST_NUMBER.MAX, {message: `Maximum gestNumber is ${GEST_NUMBER.MAX}`})
-  public gestNumber!: number;
+  @Min(GUEST_NUMBER.MIN, {message: `Minimum gestNumber is  ${GUEST_NUMBER.MIN}`})
+  @Max(GUEST_NUMBER.MAX, {message: `Maximum gestNumber is ${GUEST_NUMBER.MAX}`})
+  public guestNumber!: number;
 
   @IsInt({message: 'Price must be an integer'})
   @Min(PRICE.MIN, {message: `Minimum price is ${PRICE.MIN}`})

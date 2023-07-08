@@ -6,7 +6,6 @@ import { ApiRoute, AppRoute, HttpCode } from '../const';
 import { Token } from '../utils/utils';
 import {
   adaptCommentsToClient,
-  adaptCreateOfferToClient,
   adaptOfferToClient,
   adaptOffersToClient
 } from '../utils/adapters/adaptersToClient';
@@ -65,7 +64,8 @@ export const fetchOffer = createAsyncThunk<Offer, Offer['id'], { extra: Extra }>
 
     try {
       const { data } = await api.get<OfferDto>(`${ApiRoute.Offers}/${id}`);
-
+      // eslint-disable-next-line no-console
+      console.log(data);
       return adaptOfferToClient(data);
     } catch (error) {
       const axiosError = error as AxiosError;
@@ -83,7 +83,7 @@ export const postOffer = createAsyncThunk<Offer, NewOffer, { extra: Extra }>(
   async (newOffer, { extra }) => {
     const { api, history } = extra;
     const createOfferDto: CreateOfferDto = adaptCreateOfferToServer(newOffer);
-    const responce = await api.post<CreateOfferDto>(ApiRoute.Offers, createOfferDto);
+    const responce = await api.post<OfferDto>(ApiRoute.Offers, createOfferDto);
 
     if (responce.status === HttpCode.Created) {
       const postAvatarApiRoute = `${ApiRoute.Offers}/${responce.data.id}${ApiRoute.PreviewImage}`;
@@ -95,7 +95,7 @@ export const postOffer = createAsyncThunk<Offer, NewOffer, { extra: Extra }>(
     }
 
     history.push(`${AppRoute.Property}/${responce.data.id}`);
-    const adaptedOffer: Offer = adaptCreateOfferToClient(responce.data);
+    const adaptedOffer: Offer = adaptOfferToClient(responce.data);
     return adaptedOffer;
   });
 
@@ -197,7 +197,7 @@ export const postComment = createAsyncThunk<Comment, CommentAuth, { extra: Extra
   Action.POST_COMMENT,
   async ({ id, comment, rating }, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<Comment>(`${ApiRoute.Offers}/${id}${ApiRoute.Comments}`, { comment, rating });
+    const { data } = await api.post<Comment>(`${ApiRoute.Comments}`, { comment, rating });
 
     return data;
   });

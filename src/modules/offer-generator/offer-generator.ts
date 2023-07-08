@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { OfferGeneratorInterface } from './offer-generator.interface.js';
 import { MockData } from '../../types/mock-data.type.js';
 import { generateRandomValue, getRandomBoolean, getRandomItem, getRandomItems } from '../../core/helpers/index.js';
-import { LATITUDE, LOCATION_COUNT_DIGIT, LONGITUDE, GEST_NUMBER, ROOMS_NUMBER, PRICE, PRICE_COUNT_DIGIT, WEEK_DAY } from '../offer/offer.constant.js';
+import { LATITUDE, LOCATION_COUNT_DIGIT, LONGITUDE, GUEST_NUMBER, ROOMS_NUMBER, PRICE, PRICE_COUNT_DIGIT, WEEK_DAY } from '../offer/offer.constant.js';
 
 const HOUSE_TYPES = ['apartment', 'house', 'room', 'hotel'];
 const USER_TYPE = ['pro', 'oбычный'];
@@ -19,7 +19,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const isPremium = getRandomBoolean();
     const type = getRandomItem(HOUSE_TYPES);
     const rooms = generateRandomValue(ROOMS_NUMBER.MIN, ROOMS_NUMBER.MAX, 0).toString();
-    const gests = generateRandomValue(GEST_NUMBER.MIN, GEST_NUMBER.MAX, 0).toString();
+    const guests = generateRandomValue(GUEST_NUMBER.MIN, GUEST_NUMBER.MAX, 0).toString();
     const price = generateRandomValue(PRICE.MIN, PRICE.MAX, PRICE_COUNT_DIGIT).toString();
     const features = getRandomItems<string>(this.mockData.features).join(';');
     const email = getRandomItem<string>(this.mockData.emails);
@@ -39,7 +39,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
       isPremium,
       type,
       rooms,
-      gests,
+      guests,
       price,
       features,
       email,

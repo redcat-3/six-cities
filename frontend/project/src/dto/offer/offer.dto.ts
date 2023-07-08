@@ -29,8 +29,8 @@ export enum CityNames {
 export type User = {
   name: string;
   email: string;
-  avatar: string;
-  userType: UserType;
+  avatarPath: string;
+  type: UserType;
 };
 
 export default class OfferDto {
@@ -40,7 +40,9 @@ export default class OfferDto {
 
   public description!: string;
 
-  public city!: string;
+  public city!: CityNames;
+
+  public postDate!: string;
 
   public previewImage!: string;
 
@@ -56,7 +58,7 @@ export default class OfferDto {
 
   public roomsNumber!: number;
 
-  public guestsNumber!: number;
+  public guestNumber!: number;
 
   public price!: number;
 

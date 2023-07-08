@@ -11,7 +11,7 @@ export default class CreateUserDto {
   public name!: string;
 
   @IsString({message: 'Status of user is required'})
-  public isPro!: UserType;
+  public type!: UserType;
 
   @IsString({message: 'password is required'})
   @Length(PASSWORD_LENGHT.MIN, PASSWORD_LENGHT.MAX, {message: `Min length for password is ${PASSWORD_LENGHT.MIN}, max is  ${PASSWORD_LENGHT.MAX}`})

@@ -3,8 +3,8 @@ import { UserType } from '../../const';
 export type User = {
   name: string;
   email: string;
-  avatar: string;
-  userType: UserType;
+  avatarPath: string;
+  type: UserType;
 };
 
 export default class CreateCommentDto {

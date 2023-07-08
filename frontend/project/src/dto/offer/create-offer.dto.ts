@@ -27,8 +27,6 @@ export enum CityNames {
 }
 
 export default class CreateOfferDto {
-  public id!: string;
-
   public title!: string;
 
   public description!: string;

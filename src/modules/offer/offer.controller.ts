@@ -169,7 +169,7 @@ export default class OfferController extends Controller {
     res: Response
   ): Promise<void> {
     const { offerId } = params;
-    const offer = await this.offerService.findById(offerId, user.id);
+    const offer = await this.offerService.findDetails(offerId, user.email);
 
     this.ok(res, fillDTO(OfferRdo, offer));
   }
@@ -181,14 +181,13 @@ export default class OfferController extends Controller {
     const { query, user } = req;
     const offers = await this.offerService.find(user?.id, query?.limit);
     const isAuthorized = !!user;
-
     if(offers) {
       const offersWithFavoriteFlag: DocumentType<OfferEntity>[] = offers.map((offer) => ({
         ...JSON.parse(JSON.stringify(offer)),
         id: offer?.id,
         isFavorite: isAuthorized ? offer.isFavorite : false,
       }));
-      this.ok(res, fillDTO(OfferIndexRdo, offersWithFavoriteFlag || []));
+      this.ok(res, fillDTO(OfferRdo, offersWithFavoriteFlag || []));
     }
   }
 
@@ -198,7 +197,7 @@ export default class OfferController extends Controller {
   ): Promise<void> {
     const result = await this.offerService.createOffer({
       ...body,
-      userId: user.id,
+      userId: user?.id
     });
     const offer = await this.offerService.findById(result.id);
     this.created(res, fillDTO(OfferRdo, offer));

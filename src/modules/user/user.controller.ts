@@ -17,11 +17,10 @@ import { ValidateDtoMiddleware } from '../../core/middlewares/validate-dto.middl
 import { ValidateObjectIdMiddleware } from '../../core/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../core/middlewares/upload-file.middleware.js';
 import { UnknownRecord } from '../../types/unknown-record.type.js';
-import { JWT_ALGORITHM } from './user.constant';
 import LoggedUserRdo from './rdo/logged-user.rdo.js';
 import UploadAvatarRdo from './rdo/upload-avatar.rdo.js';
 import { PrivateRouteMiddleware } from '../../core/middlewares/private-route.middleware.js';
-import { BLOCKED_TOKENS } from './user.constant';
+import { BLOCKED_TOKENS, JWT_ALGORITHM } from './user.constant.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -71,19 +70,21 @@ export default class UserController extends Controller {
     { body }: Request<UnknownRecord, UnknownRecord, CreateUserDto>,
     res: Response,
   ): Promise <void> {
-    const user = await this
-      .userService
-      .verifyUser(body, this.configService.get('SALT'));
+    const existsUser = await this.userService.findByEmail(body.email);
 
-    if (user) {
+    if (existsUser) {
       throw new HttpError(
         StatusCodes.CONFLICT,
-        'Unauthorized',
+        `User with email <<${body.email}>> exists`,
         'UserController'
       );
     }
 
-    const result = await this.userService.create(body, this.configService.get('SALT'));
+    const result = await this.userService.create(
+      body,
+      this.configService.get('SALT')
+    );
+
     this.created(
       res,
       fillDTO(UserRdo, result)

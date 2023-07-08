@@ -34,6 +34,7 @@ export type Offer = {
   price: number;
   rating: number;
   title: string;
+  postDate: string;
   isPremium: boolean;
   isFavorite: boolean;
   city: City;

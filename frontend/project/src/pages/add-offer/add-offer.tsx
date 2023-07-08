@@ -1,8 +1,9 @@
 import { NewOffer } from '../../types/types';
-import { CITIES, CityLocation } from '../../const';
+import { AppRoute, CITIES, CityLocation } from '../../const';
 import OfferForm from '../../components/offer-form/offer-form';
 import { useAppDispatch } from '../../hooks';
 import { postOffer } from '../../store/action';
+import { useNavigate } from 'react-router-dom';
 
 const emptyOffer: NewOffer = {
   title: '',
@@ -21,9 +22,11 @@ const emptyOffer: NewOffer = {
 
 const AddOffer = (): JSX.Element | null => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleFormSubmit = (offerData: NewOffer) => {
     dispatch(postOffer(offerData));
+    navigate(AppRoute.Root);
   };
 
   return (

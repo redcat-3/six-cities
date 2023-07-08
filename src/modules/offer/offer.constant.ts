@@ -10,22 +10,27 @@ export const DEFAULT_PREVIEW_IMAGE = 'room1.jpg';
 export const RATING_DEFAULT = 0;
 export const RETURNABLE_FIELDS = {
   title: 1,
+  description: 1,
   postDate: 1,
-  cityName: 1,
+  city: 1,
   previewImage: 1,
+  images: 1,
   isPremium: 1,
   rating: 1,
   isFavorite: 1,
-  offerType: 1,
+  type: 1,
   price: 1,
-  commentsCount: 1,
+  commentCount: 1,
+  roomsNumber:1,
+  guestNumber: 1,
   latitude: 1,
   longitude: 1,
+  features: 1,
   id: 1,
   'user.name': 1,
   'user.email': 1,
-  'user.avatarUrl': 1,
-  'user.userType': 1,
+  'user.avatarPath': 1,
+  'user.type': 1,
 };
 
 export const enum RATING {
@@ -48,7 +53,7 @@ export const enum ROOMS_NUMBER {
   MAX = 8
 }
 
-export const enum GEST_NUMBER {
+export const enum GUEST_NUMBER {
   MIN = 1,
   MAX = 10
 }

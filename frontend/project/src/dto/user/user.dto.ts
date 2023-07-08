@@ -5,7 +5,7 @@ enum UserType {
 
 export default class UserDto {
   public name!: string;
-  public avatar!: string;
-  public userType!: UserType;
+  public avatarPath!: string;
+  public type!: UserType;
   public email!: string;
 }
